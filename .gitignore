@@ -1,0 +1,19 @@
+# Python
+__pycache__/
+*.py[cod]
+.venv/
+.venv-build/
+
+# Build do PyInstaller e do instalador
+build/
+dist/
+saida/
+*.spec
+
+# ffmpeg copiado automaticamente
+ffmpeg
+ffmpeg.exe
+
+# Sistema
+.DS_Store
+Thumbs.db

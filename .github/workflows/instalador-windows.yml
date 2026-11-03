@@ -1,0 +1,44 @@
+# Gera o instalador do Windows automaticamente no GitHub.
+# Roda quando você cria uma tag (ex.: v1.0.0) ou clica em "Run workflow".
+name: Instalador Windows
+
+on:
+  workflow_dispatch:
+  push:
+    tags: ["v*"]
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+
+      - name: Instalar Inno Setup
+        run: choco install innosetup -y --no-progress
+
+      - name: Gerar instalador
+        shell: cmd
+        run: CRIAR_INSTALADOR.bat
+
+      - name: Conferir se o instalador existe
+        shell: pwsh
+        run: if (-not (Test-Path saida\*.exe)) { exit 1 }
+
+      - name: Guardar o instalador
+        uses: actions/upload-artifact@v4
+        with:
+          name: PendrivePlay-Instalador
+          path: saida/*.exe
+
+      - name: Publicar na página de Releases (só em tags)
+        if: startsWith(github.ref, 'refs/tags/')
+        uses: softprops/action-gh-release@v2
+        with:
+          files: saida/*.exe
