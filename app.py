@@ -38,6 +38,7 @@ class App:
         root.configure(bg=FUNDO)
         self._estilos()
         self._montar_tela()
+        root.protocol("WM_DELETE_WINDOW", self.fechar_janela)
 
         self.atualizar_destinos()
         self.root.after(100, self._ler_fila)
@@ -125,8 +126,14 @@ class App:
         self.botao = ttk.Button(linha, text="Baixar", style="Baixar.TButton",
                                 command=self.iniciar)
         self.botao.pack(side="left", padx=5)
+        self.botao_pausar = ttk.Button(linha, text="Pausar", command=self.pausar_ou_continuar)
+        self.botao_pausar.pack(side="left", padx=5)
+        self.botao_cancelar = ttk.Button(linha, text="Cancelar", command=self.cancelar)
+        self.botao_cancelar.pack(side="left", padx=5)
         ttk.Button(linha, text="Abrir pasta", command=self.abrir_pasta).pack(
             side="left", padx=5)
+        self.botao_pausar.state(["disabled"])
+        self.botao_cancelar.state(["disabled"])
 
         # Progresso e status
         self.barra = ttk.Progressbar(f, mode="determinate", maximum=100)
@@ -256,20 +263,61 @@ class App:
             return
 
         self.ocupado = True
+        self.controle = baixador.Controle()
         self.botao.state(["disabled"])
+        self.botao_pausar.state(["!disabled"])
+        self.botao_pausar.config(text="Pausar")
+        self.botao_cancelar.state(["!disabled"])
         self.barra["value"] = 0
         self.escrever_log(f"--- {len(links)} link(s)")
         formato = self.formato.get()
-        threading.Thread(target=self._trabalho, args=(links, formato, raiz),
-                         daemon=True).start()
+        threading.Thread(target=self._trabalho,
+                         args=(links, formato, raiz, self.controle), daemon=True).start()
 
-    def _trabalho(self, links: list[str], formato: str, raiz: Path) -> None:
+    def pausar_ou_continuar(self) -> None:
+        if not self.ocupado:
+            return
+        if self.controle.pausado:
+            self.controle.retomar()
+            self.botao_pausar.config(text="Pausar")
+            self.status.config(text="Continuando...")
+            self.escrever_log("Continuando.")
+        else:
+            self.controle.pausar()
+            self.botao_pausar.config(text="Continuar")
+            self.status.config(text="Pausado. Clique em Continuar quando quiser.")
+            self.escrever_log("Pausado. (Se estiver convertendo, pausa ao terminar o arquivo atual.)")
+
+    def cancelar(self) -> bool:
+        """Pergunta e cancela. Retorna True se cancelou."""
+        if not self.ocupado:
+            return True
+        if not messagebox.askyesno(
+                "PendrivePlay",
+                "Cancelar os downloads?\n\n"
+                "Os arquivos que já terminaram continuam no pendrive.\n"
+                "Os links que faltaram ficam na caixa para baixar depois."):
+            return False
+        self.controle.cancelar()
+        self.botao_pausar.state(["disabled"])
+        self.botao_cancelar.state(["disabled"])
+        self.status.config(text="Cancelando...")
+        return True
+
+    def fechar_janela(self) -> None:
+        if self.ocupado and not self.cancelar():
+            return
+        self.root.destroy()
+
+    def _trabalho(self, links: list[str], formato: str, raiz: Path,
+                  controle: baixador.Controle) -> None:
         """Roda em outra thread: só conversa com a tela pela fila."""
         try:
             resultado = baixador.baixar_varios(
                 links, formato, raiz,
                 aviso=lambda m: self.fila.put(("aviso", m)),
                 progresso=lambda p: self.fila.put(("progresso", p)),
+                controle=controle,
             )
             self.fila.put(("fim", resultado))
         except Exception as erro:  # mostra qualquer erro na tela
@@ -298,11 +346,16 @@ class App:
         self.root.after(100, self._ler_fila)
 
     def _mostrar_resumo(self, r: baixador.Resultado) -> None:
-        self.barra["value"] = 100
-        salvos, erros = len(r.salvos), len(r.erros)
-        self.status.config(text=f"Pronto! {salvos} arquivo(s) salvo(s)"
-                                + (f", {erros} link(s) com erro." if erros else "."))
+        salvos, erros, faltam = len(r.salvos), len(r.erros), len(r.pendentes)
+        if r.cancelado:
+            self.status.config(text=f"Cancelado. {salvos} arquivo(s) salvo(s) antes.")
+        else:
+            self.barra["value"] = 100
+            self.status.config(text=f"Pronto! {salvos} arquivo(s) salvo(s)"
+                                    + (f", {erros} link(s) com erro." if erros else "."))
         partes = []
+        if r.cancelado:
+            partes.append(f"Cancelado. {faltam} link(s) não foram baixados.")
         if salvos:
             pastas = sorted({str(f.parent) for f in r.salvos})
             partes.append(f"{salvos} arquivo(s) salvo(s) em:\n" + "\n".join(pastas))
@@ -313,16 +366,21 @@ class App:
             partes.append(f"{erros} link(s) com erro (detalhes no quadro abaixo):\n{lista}")
             for link, erro in r.erros.items():
                 self.escrever_log(f"ERRO em {link}: {erro}")
-            # deixa na caixa só os links que falharam, para tentar de novo
+        sobraram = list(r.erros) + r.pendentes
+        if sobraram:
+            # deixa na caixa só os links que não terminaram, para tentar de novo
             self.entrada.delete("1.0", "end")
             self.entrada.config(fg=TEXTO)
-            self.entrada.insert("1.0", "\n".join(r.erros))
+            self.entrada.insert("1.0", "\n".join(sobraram))
             self._contar_links()
+            partes.append("Os links que não terminaram ficaram na caixa.")
         if salvos:
             partes.append("Antes de tirar o pendrive, use \"Ejetar\" no Windows.")
 
         mensagem = "\n\n".join(partes)
-        if erros and not salvos:
+        if r.cancelado:
+            messagebox.showinfo("PendrivePlay", mensagem)
+        elif erros and not salvos:
             messagebox.showerror("PendrivePlay", mensagem)
         elif erros:
             messagebox.showwarning("PendrivePlay", mensagem)
@@ -332,6 +390,9 @@ class App:
     def _terminar(self) -> None:
         self.ocupado = False
         self.botao.state(["!disabled"])
+        self.botao_pausar.state(["disabled"])
+        self.botao_pausar.config(text="Pausar")
+        self.botao_cancelar.state(["disabled"])
         self.atualizar_destinos()  # atualiza o espaço livre
 
     def escrever_log(self, texto: str) -> None:

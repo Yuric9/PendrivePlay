@@ -16,6 +16,16 @@ Os links são baixados um de cada vez. Se algum der erro, o programa continua
 com os outros e, no final, deixa na caixa só os que falharam, para você tentar
 de novo. Links repetidos e linhas começando com `#` são ignorados.
 
+**Pausar e cancelar:**
+
+- **Pausar** para o download na hora; **Continuar** retoma de onde parou. Se a
+  pausa acontecer durante a conversão, ela vale ao terminar o arquivo atual.
+  Em pausas muito longas (horas), o link pode expirar: ele volta para a caixa
+  como erro e é só baixar de novo.
+- **Cancelar** para tudo na hora. O que já terminou fica no pendrive, nada fica
+  pela metade, e os links que faltaram voltam para a caixa.
+- Fechar a janela durante um download pergunta se você quer cancelar.
+
 O programa cria as pastas no pendrive, se ainda não existirem:
 
 ```

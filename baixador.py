@@ -11,6 +11,7 @@ import shutil
 import subprocess
 import sys
 import tempfile
+import threading
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -69,15 +70,67 @@ def nome_livre(pasta: Path, nome: str, ext: str) -> Path:
     return caminho
 
 
-def _rodar_ffmpeg(cmd: list[str]) -> None:
-    r = subprocess.run(cmd, capture_output=True, text=True, errors="replace",
-                       creationflags=SEM_JANELA)
-    if r.returncode != 0:
-        ultimas = "\n".join(r.stderr.strip().splitlines()[-5:])
+class Cancelado(Exception):
+    """O usuário clicou em Cancelar."""
+
+
+class Controle:
+    """Botões Pausar/Continuar/Cancelar, compartilhados entre a tela e o download.
+
+    A tela chama pausar(), retomar() e cancelar(). O download chama checar()
+    em pontos seguros: ali ele espera se estiver pausado, ou para se foi cancelado.
+    """
+
+    def __init__(self) -> None:
+        self._cancelar = threading.Event()
+        self._liberado = threading.Event()
+        self._liberado.set()
+
+    def pausar(self) -> None:
+        self._liberado.clear()
+
+    def retomar(self) -> None:
+        self._liberado.set()
+
+    def cancelar(self) -> None:
+        self._cancelar.set()
+        self._liberado.set()  # se estava pausado, solta para poder parar
+
+    @property
+    def pausado(self) -> bool:
+        return not self._liberado.is_set()
+
+    @property
+    def cancelado(self) -> bool:
+        return self._cancelar.is_set()
+
+    def checar(self) -> None:
+        self._liberado.wait()
+        if self.cancelado:
+            raise Cancelado()
+
+
+def _rodar_ffmpeg(cmd: list[str], controle: Controle | None = None) -> None:
+    """Roda o ffmpeg. Se o usuário cancelar, encerra o ffmpeg na hora."""
+    proc = subprocess.Popen(cmd, stdin=subprocess.DEVNULL, stdout=subprocess.DEVNULL,
+                            stderr=subprocess.PIPE, text=True, errors="replace",
+                            creationflags=SEM_JANELA)
+    while True:
+        try:
+            _, erros = proc.communicate(timeout=0.3)
+            break
+        except subprocess.TimeoutExpired:
+            if controle and controle.cancelado:
+                proc.kill()
+                proc.communicate()
+                raise Cancelado()
+    if proc.returncode != 0:
+        ultimas = "\n".join(erros.strip().splitlines()[-5:])
         raise RuntimeError(f"Erro na conversão:\n{ultimas}")
 
 
-def converter_para_tv(ffmpeg: str, origem: Path, saida: Path) -> None:
+def converter_para_tv(ffmpeg: str, origem: Path, saida: Path,
+                      controle: Controle | None = None) -> None:
     """MP4 720p H.264 baseline: toca em TVs antigas, Smart TVs e TV Box."""
     _rodar_ffmpeg([
         ffmpeg, "-y", "-i", str(origem),
@@ -90,19 +143,20 @@ def converter_para_tv(ffmpeg: str, origem: Path, saida: Path) -> None:
         "-c:a", "aac", "-b:a", "192k", "-ac", "2",
         "-movflags", "+faststart",
         str(saida),
-    ])
+    ], controle)
 
 
-def converter_para_mp3(ffmpeg: str, origem: Path, saida: Path) -> None:
+def converter_para_mp3(ffmpeg: str, origem: Path, saida: Path,
+                       controle: Controle | None = None) -> None:
     _rodar_ffmpeg([
         ffmpeg, "-y", "-i", str(origem), "-vn",
         "-c:a", "libmp3lame", "-b:a", "192k", "-ar", "44100",
         str(saida),
-    ])
+    ], controle)
 
 
 def salvar_no_pendrive(ffmpeg: str, origem: Path, destino: Path, formato: str,
-                       tmp: Path) -> Path:
+                       tmp: Path, controle: Controle | None = None) -> Path:
     """Converte no PC e copia o arquivo pronto para o pendrive.
 
     A cópia usa um nome provisório e só recebe o nome final no fim. Assim,
@@ -111,9 +165,11 @@ def salvar_no_pendrive(ffmpeg: str, origem: Path, destino: Path, formato: str,
     """
     convertido = tmp / f"convertido.{formato}"
     if formato == "mp4":
-        converter_para_tv(ffmpeg, origem, convertido)
+        converter_para_tv(ffmpeg, origem, convertido, controle)
     else:
-        converter_para_mp3(ffmpeg, origem, convertido)
+        converter_para_mp3(ffmpeg, origem, convertido, controle)
+    if controle:
+        controle.checar()  # cancelou no fim da conversão: não copia
 
     final = nome_livre(destino, origem.stem, formato)
     provisorio = final.with_name(final.name + ".parcial")
@@ -146,11 +202,13 @@ class _Registro:
 
 
 def baixar(url: str, formato: str, raiz_destino: str | Path,
-           aviso: Aviso = print, progresso: Progresso = lambda p: None) -> list[Path]:
+           aviso: Aviso = print, progresso: Progresso = lambda p: None,
+           controle: Controle | None = None) -> list[Path]:
     """Baixa o link (vídeo ou playlist) e salva no pendrive.
 
-    Retorna a lista de arquivos salvos.
+    Retorna a lista de arquivos salvos. Levanta Cancelado se o usuário cancelar.
     """
+    controle = controle or Controle()
     if formato not in FORMATOS:
         raise ValueError(f"Formato inválido: {formato}")
     raiz = Path(raiz_destino)
@@ -160,10 +218,17 @@ def baixar(url: str, formato: str, raiz_destino: str | Path,
     destino = preparar_destino(raiz, formato)
     ffmpeg = achar_ffmpeg()
     from yt_dlp import YoutubeDL
+    from yt_dlp.utils import DownloadCancelled
 
     titulo_atual = {"nome": None}
 
     def gancho(d: dict) -> None:
+        # Chamado pelo yt-dlp várias vezes por segundo durante o download.
+        # Aqui ele espera se estiver pausado e para se foi cancelado.
+        try:
+            controle.checar()
+        except Cancelado:
+            raise DownloadCancelled("cancelado pelo usuário")
         if d["status"] == "downloading":
             nome = d.get("info_dict", {}).get("title")
             if nome and nome != titulo_atual["nome"]:
@@ -194,8 +259,12 @@ def baixar(url: str, formato: str, raiz_destino: str | Path,
         else:
             opcoes["format"] = "bestaudio/best"
 
-        with YoutubeDL(opcoes) as ydl:
-            ydl.download([url])
+        try:
+            with YoutubeDL(opcoes) as ydl:
+                ydl.download([url])
+        except (DownloadCancelled, Cancelado):
+            raise Cancelado()
+        controle.checar()
 
         arquivos = sorted(
             a for a in baixados.glob("*")
@@ -208,8 +277,9 @@ def baixar(url: str, formato: str, raiz_destino: str | Path,
         salvos = []
         for i, arq in enumerate(arquivos, 1):
             etapa = "Convertendo para TV" if formato == "mp4" else "Convertendo para MP3"
+            controle.checar()
             aviso(f"{etapa} ({i}/{len(arquivos)}): {arq.stem}")
-            salvos.append(salvar_no_pendrive(ffmpeg, arq, destino, formato, tmp))
+            salvos.append(salvar_no_pendrive(ffmpeg, arq, destino, formato, tmp, controle))
             aviso(f"Salvo: {salvos[-1]}")
     return salvos
 
@@ -234,15 +304,20 @@ def separar_links(texto: str) -> list[str]:
 class Resultado:
     salvos: list[Path] = field(default_factory=list)
     erros: dict[str, str] = field(default_factory=dict)  # link -> mensagem
+    cancelado: bool = False
+    pendentes: list[str] = field(default_factory=list)   # links que não terminaram
 
 
 def baixar_varios(links: list[str], formato: str, raiz_destino: str | Path,
-                  aviso: Aviso = print, progresso: Progresso = lambda p: None) -> Resultado:
+                  aviso: Aviso = print, progresso: Progresso = lambda p: None,
+                  controle: Controle | None = None) -> Resultado:
     """Baixa vários links, um de cada vez.
 
     Se um link der erro, anota e continua com os próximos.
+    Se o usuário cancelar, para e guarda em "pendentes" os links que faltaram.
     A barra de progresso vai de 0 a 100 considerando todos os links.
     """
+    controle = controle or Controle()
     resultado = Resultado()
     total = len(links)
     for i, link in enumerate(links):
@@ -252,7 +327,14 @@ def baixar_varios(links: list[str], formato: str, raiz_destino: str | Path,
             progresso((i + p / 100) / total * 100)
 
         try:
-            resultado.salvos += baixar(link, formato, raiz_destino, aviso, progresso_geral)
+            controle.checar()
+            resultado.salvos += baixar(link, formato, raiz_destino, aviso,
+                                       progresso_geral, controle)
+        except Cancelado:
+            resultado.cancelado = True
+            resultado.pendentes = links[i:]
+            aviso("Cancelado. Os arquivos já salvos continuam no pendrive.")
+            return resultado
         except Exception as erro:
             resultado.erros[link] = str(erro)
             aviso(f"Erro neste link, indo para o próximo: {erro}")
