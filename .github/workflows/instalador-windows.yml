@@ -1,22 +1,51 @@
-# Gera o instalador do Windows automaticamente no GitHub.
-# Roda quando você cria uma tag (ex.: v1.0.0) ou clica em "Run workflow".
-name: Instalador Windows
+# 1) Roda os testes no Linux e no Windows a cada envio de código.
+# 2) Se passarem, gera o instalador, instala, testa o .exe e desinstala.
+#    (na main, em tags v* ou clicando em "Run workflow")
+name: Testes e instalador
 
 on:
-  workflow_dispatch:
   push:
+    branches: ["**"]
     tags: ["v*"]
+  pull_request:
+  workflow_dispatch:
 
 permissions:
   contents: write
 
 jobs:
-  build:
+  testes:
+    name: Testes (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-python@v6
+        with:
+          python-version: "3.12"
+
+      - name: Instalar dependências
+        run: python -m pip install -r requirements-dev.txt
+
+      - name: Rodar testes
+        run: python -m pytest
+
+  instalador:
+    name: Instalador Windows
+    needs: testes
+    if: >-
+      github.event_name == 'workflow_dispatch' ||
+      github.ref == 'refs/heads/main' ||
+      startsWith(github.ref, 'refs/tags/')
     runs-on: windows-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
 
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v6
         with:
           python-version: "3.12"
 
@@ -27,12 +56,39 @@ jobs:
         shell: cmd
         run: CRIAR_INSTALADOR.bat
 
-      - name: Conferir se o instalador existe
+      - name: Instalar, testar o .exe e desinstalar
         shell: pwsh
-        run: if (-not (Test-Path saida\*.exe)) { exit 1 }
+        run: |
+          $instalador = Get-ChildItem saida\*.exe | Select-Object -First 1
+          if (-not $instalador) { throw "Instalador não foi gerado" }
+          Write-Host "Instalador: $($instalador.Name) ($([math]::Round($instalador.Length/1MB)) MB)"
+
+          # instalação silenciosa, como um usuário comum (sem administrador)
+          $p = Start-Process $instalador.FullName -Wait -PassThru `
+               -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART','/CURRENTUSER'
+          if ($p.ExitCode -ne 0) { throw "Instalação falhou (código $($p.ExitCode))" }
+
+          $pasta = "$env:LOCALAPPDATA\Programs\PendrivePlay"
+          $exe = "$pasta\PendrivePlay.exe"
+          if (-not (Test-Path $exe)) { throw "PendrivePlay.exe não foi instalado em $pasta" }
+          if (-not (Test-Path "$pasta\ffmpeg.exe")) { throw "ffmpeg.exe não foi instalado" }
+          Write-Host "Instalado em $pasta"
+
+          # roda o autoteste do programa instalado
+          $resultado = "$env:RUNNER_TEMP\autoteste.txt"
+          $t = Start-Process $exe -Wait -PassThru -ArgumentList '--autoteste', "`"$resultado`""
+          Get-Content $resultado -Encoding utf8
+          if ($t.ExitCode -ne 0) { throw "Autoteste do .exe falhou" }
+
+          # desinstala e confere se saiu
+          $d = Start-Process "$pasta\unins000.exe" -Wait -PassThru `
+               -ArgumentList '/VERYSILENT','/SUPPRESSMSGBOXES','/NORESTART'
+          Start-Sleep -Seconds 3
+          if (Test-Path $exe) { throw "Desinstalação não removeu o programa" }
+          Write-Host "Desinstalação OK"
 
       - name: Guardar o instalador
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v5
         with:
           name: PendrivePlay-Instalador
           path: saida/*.exe

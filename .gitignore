@@ -17,3 +17,4 @@ ffmpeg.exe
 # Sistema
 .DS_Store
 Thumbs.db
+.pytest_cache/

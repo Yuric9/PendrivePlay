@@ -272,6 +272,12 @@ class App:
 
 
 def main() -> None:
+    if "--autoteste" in sys.argv:
+        import autoteste
+        i = sys.argv.index("--autoteste")
+        saida = sys.argv[i + 1] if len(sys.argv) > i + 1 else None
+        sys.exit(autoteste.rodar(Path(saida) if saida else None))
+
     root = tk.Tk()
     App(root)
     root.mainloop()

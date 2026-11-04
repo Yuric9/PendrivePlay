@@ -42,7 +42,7 @@ execute. Ele não pede senha de administrador e cria um atalho na área de traba
 ## Gerar o instalador
 
 **Opção 1: no GitHub (automático).** Na aba *Actions*, abra
-"Instalador Windows" e clique em *Run workflow*. Ao final, o instalador fica
+"Testes e instalador" e clique em *Run workflow*. Ao final, o instalador fica
 em *Artifacts*. Se você criar uma tag (`v1.0.0`), ele também vai para *Releases*.
 
 **Opção 2: no seu PC.**
@@ -69,6 +69,28 @@ Também dá para usar pelo terminal:
 python baixador.py "LINK" mp4 E:\
 ```
 
+### Testes
+
+```bash
+pip install -r requirements-dev.txt
+python -m pytest
+```
+
+Os testes não usam a internet: eles geram um vídeo de teste com o ffmpeg e
+trocam o yt-dlp por uma versão falsa. Eles rodam sozinhos no GitHub (Linux e
+Windows) a cada envio de código.
+
+### Autoteste do programa instalado
+
+Para conferir se o programa instalado está completo (ffmpeg, yt-dlp e conversões):
+
+```bash
+"%LOCALAPPDATA%\Programs\PendrivePlay\PendrivePlay.exe" --autoteste resultado.txt
+```
+
+O resultado fica em `resultado.txt`. O GitHub faz esse mesmo teste depois de
+gerar o instalador.
+
 ### Estrutura
 
 | Arquivo | Função |
@@ -76,6 +98,8 @@ python baixador.py "LINK" mp4 E:\
 | `app.py` | Janela (Tkinter) |
 | `baixador.py` | Download (yt-dlp) e conversão (ffmpeg) |
 | `pendrive.py` | Detecta pendrives conectados no Windows |
+| `autoteste.py` | Autoteste (`--autoteste`) |
+| `testes/` | Testes automáticos (pytest) |
 | `instalador/PendrivePlay.iss` | Script do instalador (Inno Setup) |
 | `CRIAR_INSTALADOR.bat` | Gera o `.exe` e o instalador |
 | `.github/workflows/` | Gera o instalador automaticamente no GitHub |
