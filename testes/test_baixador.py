@@ -95,3 +95,61 @@ def test_link_sem_nada_baixado_da_erro(ytdlp_falso, pendrive):
     ytdlp_falso.videos = []
     with pytest.raises(RuntimeError, match="Nada foi baixado"):
         baixador.baixar("https://exemplo", "mp4", pendrive)
+
+
+# ---------- vários links ----------
+
+def test_separar_links_um_por_linha():
+    texto = """
+    https://www.youtube.com/watch?v=aaa
+    https://youtu.be/bbb
+
+    https://www.youtube.com/watch?v=ccc
+    """
+    assert baixador.separar_links(texto) == [
+        "https://www.youtube.com/watch?v=aaa",
+        "https://youtu.be/bbb",
+        "https://www.youtube.com/watch?v=ccc",
+    ]
+
+
+def test_separar_links_ignora_repetidos_comentarios_e_texto():
+    texto = """# minha lista
+    Música 1: https://youtu.be/aaa, muito boa
+    https://youtu.be/aaa
+    # https://youtu.be/comentado
+    sem link nesta linha
+    https://youtu.be/bbb https://youtu.be/ccc.
+    """
+    assert baixador.separar_links(texto) == [
+        "https://youtu.be/aaa", "https://youtu.be/bbb", "https://youtu.be/ccc"]
+
+
+def test_separar_links_texto_vazio():
+    assert baixador.separar_links("") == []
+    assert baixador.separar_links("só texto, nenhum link") == []
+
+
+def test_baixar_varios_continua_depois_de_um_erro(ytdlp_falso, video_teste, pendrive):
+    ytdlp_falso.videos = [video_teste]
+    links = ["https://exemplo/1", "https://exemplo/erro", "https://exemplo/3"]
+    avisos, progresso = [], []
+
+    r = baixador.baixar_varios(links, "mp3", pendrive,
+                               aviso=avisos.append, progresso=progresso.append)
+
+    assert len(r.salvos) == 2                       # o 1º e o 3º deram certo
+    assert list(r.erros) == ["https://exemplo/erro"]
+    assert "Video unavailable" in r.erros["https://exemplo/erro"]  # motivo real do erro
+    nomes = sorted(f.name for f in (pendrive / "MP3").iterdir())
+    assert nomes == ["video original (2).mp3", "video original.mp3"]  # não sobrescreve
+    assert progresso == sorted(progresso)           # a barra só anda para frente
+    assert progresso[-1] == 100
+    assert any(a.startswith("[2/3]") for a in avisos)
+
+
+def test_baixar_varios_todos_com_erro(ytdlp_falso, pendrive):
+    links = ["https://exemplo/erro1", "https://exemplo/erro2"]
+    r = baixador.baixar_varios(links, "mp4", pendrive, aviso=lambda m: None)
+    assert r.salvos == []
+    assert list(r.erros) == links

@@ -9,8 +9,12 @@ uso das plataformas.
 ## Como funciona
 
 1. Conecte o pendrive: ele aparece sozinho na lista "Salvar em".
-2. Cole o link e escolha **Vídeo MP4 para TV** ou **Música MP3**.
-3. Clique em **Baixar**.
+2. Cole **um ou vários links**, um por linha, ou clique em **Carregar lista .txt**.
+3. Escolha **Vídeo MP4 para TV** ou **Música MP3** e clique em **Baixar**.
+
+Os links são baixados um de cada vez. Se algum der erro, o programa continua
+com os outros e, no final, deixa na caixa só os que falharam, para você tentar
+de novo. Links repetidos e linhas começando com `#` são ignorados.
 
 O programa cria as pastas no pendrive, se ainda não existirem:
 
@@ -66,7 +70,7 @@ Ou dê duplo clique em `ABRIR_SEM_INSTALAR.bat`.
 Também dá para usar pelo terminal:
 
 ```bash
-python baixador.py "LINK" mp4 E:\
+python baixador.py mp4 E:\ "LINK1" "LINK2"
 ```
 
 ### Testes

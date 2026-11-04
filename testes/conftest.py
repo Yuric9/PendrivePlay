@@ -52,6 +52,9 @@ class YoutubeDLFalso:
     def download(self, urls):
         pasta = Path(self.opcoes["outtmpl"]).parent
         pasta.mkdir(parents=True, exist_ok=True)
+        if any("erro" in u for u in urls):  # simula um link quebrado
+            self.opcoes["logger"].error("ERROR: Video unavailable")
+            return
         for video in self.videos:
             for gancho in self.opcoes["progress_hooks"]:
                 gancho({"status": "downloading", "info_dict": {"title": video.stem},
