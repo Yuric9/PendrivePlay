@@ -1,0 +1,26 @@
+﻿PendrivePlay - Licença e aviso de uso
+=====================================
+
+LICENÇA
+O PendrivePlay é software livre, distribuído sob a licença MIT. Você pode
+usar, copiar e modificar o programa. Ele é fornecido "como está", sem
+garantia de qualquer tipo.
+
+O programa inclui componentes de terceiros com licenças próprias, entre eles
+o FFmpeg (GPLv3). Os textos completos e os endereços do código-fonte ficam
+na pasta "licencas", dentro da pasta de instalação.
+
+AVISO DE USO E DIREITOS AUTORAIS
+O PendrivePlay baixa vídeos e áudios a partir de links, inclusive do
+YouTube, e converte os arquivos para tocar na TV.
+
+- Baixe apenas conteúdo que você tem direito de baixar: vídeos seus,
+  conteúdo em domínio público, com licença livre (como Creative Commons) ou
+  com autorização do autor.
+- Os termos de uso de alguns sites, incluindo o YouTube, não permitem
+  baixar conteúdo fora do aplicativo deles. Respeitar esses termos e as
+  leis de direitos autorais é responsabilidade de quem usa o programa.
+- Não use o PendrivePlay para copiar, distribuir ou vender conteúdo de
+  terceiros sem autorização.
+
+Ao continuar a instalação, você declara que leu e concorda com esses termos.

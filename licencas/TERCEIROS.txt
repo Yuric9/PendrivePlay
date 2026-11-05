@@ -1,0 +1,62 @@
+﻿PendrivePlay - Componentes de terceiros
+=======================================
+
+O PendrivePlay é distribuído sob a licença MIT (veja PendrivePlay-LICENSE.txt).
+Junto com ele são distribuídos os componentes abaixo, cada um sob a sua
+própria licença. Eles NÃO passam a ser MIT por estarem no mesmo instalador.
+
+
+1) FFmpeg 9.0.2 (arquivo ffmpeg.exe)
+------------------------------------
+Licença: GNU General Public License versão 3 (GPLv3) - texto completo em
+GPL-3.0.txt, nesta mesma pasta.
+
+O ffmpeg.exe é um programa separado. O PendrivePlay apenas o executa para
+converter os arquivos; o código do PendrivePlay não é derivado do FFmpeg.
+
+Versão: build "essentials" 9.0.2 de www.gyan.dev, distribuída pelo pacote
+Python imageio-ffmpeg 0.8.1. Ela inclui bibliotecas como libx264, libx265,
+libmp3lame, libvpx, libopus e outras, cada uma sob sua licença (GPL/LGPL/BSD).
+
+Código-fonte (Corresponding Source):
+  - FFmpeg 9.0.2: https://ffmpeg.org/releases/ffmpeg-9.0.2.tar.xz
+    (também anexado à página de Releases do PendrivePlay no GitHub:
+     https://github.com/Yuric9/PendrivePlay/releases)
+  - Informações e scripts da build: https://www.gyan.dev/ffmpeg/builds/
+  - Pacote imageio-ffmpeg: https://github.com/imageio/imageio-ffmpeg
+
+Se algum desses endereços deixar de funcionar, peça o código-fonte pela
+página de Issues do projeto: https://github.com/Yuric9/PendrivePlay/issues
+Ele será fornecido sem custo além do envio, por pelo menos 3 anos a partir
+da data desta distribuição.
+
+
+2) yt-dlp
+---------
+Licença: The Unlicense (domínio público).
+https://github.com/yt-dlp/yt-dlp
+
+
+3) Python
+---------
+Licença: Python Software Foundation License.
+https://docs.python.org/3/license.html
+
+
+4) Tcl/Tk (janela do programa, via Tkinter)
+-------------------------------------------
+Licença: estilo BSD.
+https://www.tcl.tk/software/tcltk/license.html
+
+
+5) PyInstaller (carregador do PendrivePlay.exe)
+-----------------------------------------------
+Licença: GPLv2 com exceção que permite distribuir programas gerados por ele
+sob qualquer licença.
+https://github.com/pyinstaller/pyinstaller/blob/develop/COPYING.txt
+
+
+6) Inno Setup (instalador)
+--------------------------
+Licença: Inno Setup License.
+https://jrsoftware.org/files/is/license.txt
