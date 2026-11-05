@@ -114,6 +114,8 @@ gerar o instalador.
 | `pendrive.py` | Detecta pendrives conectados no Windows |
 | `autoteste.py` | Autoteste (`--autoteste`) |
 | `testes/` | Testes automáticos (pytest) |
+| `licencas/` | Licenças dos componentes (FFmpeg GPLv3 etc.) |
+| `docs/gumroad/` | Guia em PDF, página de venda, capa e capturas de tela |
 | `instalador/PendrivePlay.iss` | Script do instalador (Inno Setup) |
 | `CRIAR_INSTALADOR.bat` | Gera o `.exe` e o instalador |
 | `.github/workflows/` | Gera o instalador automaticamente no GitHub |
@@ -129,4 +131,5 @@ gerar o instalador.
 
 ## Licença
 
-MIT
+MIT. O instalador inclui o FFmpeg (GPLv3) e outros componentes com licenças
+próprias: veja [`licencas/TERCEIROS.txt`](licencas/TERCEIROS.txt).

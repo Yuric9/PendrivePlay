@@ -93,8 +93,48 @@ jobs:
           name: PendrivePlay-Instalador
           path: saida/*.exe
 
+      - name: Montar o pacote do Gumroad (.zip)
+        shell: pwsh
+        run: |
+          $instalador = Get-ChildItem saida\*.exe | Select-Object -First 1
+          $versao = $instalador.BaseName -replace '^PendrivePlay_Instalador_', ''
+          $pasta = "pacote\PendrivePlay_$versao"
+          New-Item -ItemType Directory -Force "$pasta\licencas" | Out-Null
+          Copy-Item $instalador.FullName $pasta
+          Copy-Item docs\gumroad\GUIA_DE_INSTALACAO.pdf $pasta
+          Copy-Item instalador\LEIA_ANTES_DE_INSTALAR.txt $pasta
+          Copy-Item licencas\* "$pasta\licencas"
+          Copy-Item LICENSE "$pasta\licencas\PendrivePlay-LICENSE.txt"
+          New-Item -ItemType Directory -Force saida_gumroad | Out-Null
+          Compress-Archive -Path $pasta -DestinationPath "saida_gumroad\PendrivePlay_$versao.zip" -Force
+          Write-Host "Conteúdo do pacote:"
+          Get-ChildItem -Recurse $pasta | ForEach-Object {
+            "{0,10:N1} MB  {1}" -f ($_.Length / 1MB), $_.FullName.Replace("$PWD\pacote\", "")
+          }
+          $zip = Get-Item "saida_gumroad\PendrivePlay_$versao.zip"
+          Write-Host "Pacote: $($zip.Name) ($([math]::Round($zip.Length/1MB)) MB)"
+
+      - name: Guardar o pacote do Gumroad
+        uses: actions/upload-artifact@v5
+        with:
+          name: PendrivePlay-Gumroad
+          path: saida_gumroad/*.zip
+
+      - name: Baixar o código-fonte do FFmpeg (exigência da GPL, só em tags)
+        if: startsWith(github.ref, 'refs/tags/')
+        shell: pwsh
+        run: |
+          $linha = (& dist\PendrivePlay\ffmpeg.exe -version | Select-Object -First 1)
+          if ($linha -notmatch 'ffmpeg version (\d+(\.\d+)+)') { throw "Versão do ffmpeg não reconhecida: $linha" }
+          $v = $Matches[1]
+          New-Item -ItemType Directory -Force fonte_ffmpeg | Out-Null
+          Invoke-WebRequest "https://ffmpeg.org/releases/ffmpeg-$v.tar.xz" -OutFile "fonte_ffmpeg\ffmpeg-$v-codigo-fonte.tar.xz"
+          Get-ChildItem fonte_ffmpeg
+
       - name: Publicar na página de Releases (só em tags)
         if: startsWith(github.ref, 'refs/tags/')
         uses: softprops/action-gh-release@v2
         with:
-          files: saida/*.exe
+          files: |
+            saida/*.exe
+            fonte_ffmpeg/*

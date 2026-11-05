@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PendrivePlay - capa</title>
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: "Segoe UI", "DejaVu Sans", Arial, sans-serif; background: #0f1115; color: #e5e7eb; }
+  .capa { width: 1280px; height: 720px; display: flex; align-items: center; gap: 48px; padding: 0 72px;
+          background: radial-gradient(circle at 80% 40%, #14532d 0%, #0f1115 55%); }
+  .texto { flex: 1; }
+  .marca { font-size: 72px; font-weight: 800; letter-spacing: -1px; }
+  .marca span { color: #22c55e; }
+  .frase { font-size: 34px; color: #d1d5db; margin-top: 14px; line-height: 1.25; }
+  .itens { margin-top: 34px; display: flex; flex-wrap: wrap; gap: 12px; }
+  .item { border: 2px solid #22c55e; color: #bbf7d0; border-radius: 999px; padding: 8px 18px; font-size: 22px; font-weight: 600; }
+  .print img { width: 520px; border-radius: 12px; border: 1px solid #374151; box-shadow: 0 20px 60px rgba(0,0,0,.6); display: block; }
+  .rodape { margin-top: 34px; font-size: 20px; color: #9ca3af; }
+
+  .mini { width: 600px; height: 600px; display: flex; flex-direction: column; align-items: center; justify-content: center;
+          background: radial-gradient(circle at 50% 30%, #14532d 0%, #0f1115 65%); text-align: center; padding: 40px; }
+  .mini .icone { width: 190px; height: 190px; border-radius: 40px; background: #22c55e; display: flex; align-items: center; justify-content: center; }
+  .mini .marca { font-size: 64px; margin-top: 34px; }
+  .mini .frase { font-size: 28px; margin-top: 10px; }
+</style>
+</head>
+<body>
+<!-- ícone desenhado: pendrive com o símbolo de "play" -->
+<svg width="0" height="0" style="position:absolute">
+  <symbol id="pendrive" viewBox="0 0 100 100">
+    <rect x="38" y="6" width="24" height="18" rx="2" fill="none" stroke="#052e16" stroke-width="5"/>
+    <rect x="44" y="11" width="4" height="6" fill="#052e16"/><rect x="52" y="11" width="4" height="6" fill="#052e16"/>
+    <rect x="28" y="24" width="44" height="68" rx="10" fill="#052e16"/>
+    <path d="M44 44 L62 58 L44 72 Z" fill="#22c55e"/>
+  </symbol>
+</svg>
+
+<div class="capa" id="capa">
+  <div class="texto">
+    <div class="marca">Pendrive<span>Play</span></div>
+    <div class="frase">Do link para o pendrive,<br>pronto para a TV.</div>
+    <div class="itens">
+      <div class="item">Vídeo para TV</div>
+      <div class="item">MP3</div>
+      <div class="item">Vários links</div>
+      <div class="item">Pausar e cancelar</div>
+    </div>
+    <div class="rodape">Para Windows 10 e 11 · em português</div>
+  </div>
+  <div class="print"><img src="imagens/04_pronto.png" alt=""></div>
+</div>
+
+<div class="mini" id="mini">
+  <div class="icone"><svg width="150" height="150"><use href="#pendrive"/></svg></div>
+  <div class="marca">Pendrive<span style="color:#22c55e">Play</span></div>
+  <div class="frase">Do link para o pendrive,<br>pronto para a TV.</div>
+</div>
+</body>
+</html>

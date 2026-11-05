@@ -76,6 +76,7 @@ class App:
         f.pack(fill="both", expand=True)
 
         ttk.Label(f, text="PendrivePlay", style="Titulo.TLabel").pack(anchor="w")
+        ttk.Button(f, text="Sobre", command=self.sobre).place(relx=1.0, y=0, anchor="ne")
         ttk.Label(f, text="Baixa e salva direto no pendrive, pronto para a TV.",
                   style="Fraco.TLabel").pack(anchor="w", pady=(0, 14))
 
@@ -238,6 +239,28 @@ class App:
             self.info_destino.config(
                 text=f"Vídeos → {raiz / baixador.PASTA_VIDEOS}     "
                      f"Músicas → {raiz / baixador.PASTA_MP3}", foreground=APAGADO)
+
+    def sobre(self) -> None:
+        abrir = messagebox.askyesno(
+            "Sobre o PendrivePlay",
+            f"PendrivePlay {VERSAO}\n"
+            "Baixa vídeos e músicas e salva no pendrive, pronto para a TV.\n\n"
+            "Software livre, licença MIT. Inclui o FFmpeg (GPLv3) e o yt-dlp.\n"
+            "Código: github.com/Yuric9/PendrivePlay\n\n"
+            "Baixe apenas conteúdo que você tem direito de baixar e respeite "
+            "os termos de uso de cada site.\n\n"
+            "Abrir a pasta com as licenças completas?")
+        if abrir:
+            self._abrir_no_explorador(baixador.pasta_do_programa() / "licencas")
+
+    def _abrir_no_explorador(self, pasta: Path) -> None:
+        if not pasta.exists():
+            messagebox.showwarning("PendrivePlay", f"Pasta não encontrada:\n{pasta}")
+            return
+        if sys.platform == "win32":
+            os.startfile(pasta)
+        else:
+            subprocess.Popen(["xdg-open", str(pasta)])
 
     def abrir_pasta(self) -> None:
         raiz = self.destinos.get(self.destino.get())
