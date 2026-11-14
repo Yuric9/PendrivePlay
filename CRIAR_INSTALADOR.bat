@@ -24,7 +24,8 @@ set PY=.venv-build\Scripts\python.exe
 if errorlevel 1 ( echo [ERRO] Falha ao instalar dependencias. & goto fim )
 
 echo [3/5] Gerando o programa com PyInstaller...
-%PY% -m PyInstaller --noconfirm --clean --windowed --name PendrivePlay app.py
+rem imageio_ffmpeg fica de fora: o ffmpeg.exe e copiado separado (evita 100 MB duplicados)
+%PY% -m PyInstaller --noconfirm --clean --windowed --name PendrivePlay --exclude-module imageio_ffmpeg app.py
 if errorlevel 1 ( echo [ERRO] Falha no PyInstaller. & goto fim )
 
 echo [4/5] Copiando ffmpeg para junto do programa...

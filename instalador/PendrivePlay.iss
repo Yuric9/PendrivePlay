@@ -23,6 +23,8 @@ Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern
 UninstallDisplayIcon={app}\{#AppExe}
+; Tela de licença e aviso de uso (o usuário precisa aceitar)
+LicenseFile=LEIA_ANTES_DE_INSTALAR.txt
 
 [Languages]
 Name: "ptbr"; MessagesFile: "compiler:Languages\BrazilianPortuguese.isl"
@@ -32,6 +34,9 @@ Name: "desktopicon"; Description: "{cm:CreateDesktopIcon}"; GroupDescription: "{
 
 [Files]
 Source: "..\dist\PendrivePlay\*"; DestDir: "{app}"; Flags: ignoreversion recursesubdirs createallsubdirs
+Source: "..\licencas\*"; DestDir: "{app}\licencas"; Flags: ignoreversion
+Source: "..\LICENSE"; DestDir: "{app}\licencas"; DestName: "PendrivePlay-LICENSE.txt"; Flags: ignoreversion
+Source: "LEIA_ANTES_DE_INSTALAR.txt"; DestDir: "{app}\licencas"; Flags: ignoreversion
 
 [Icons]
 Name: "{group}\{#AppNome}"; Filename: "{app}\{#AppExe}"

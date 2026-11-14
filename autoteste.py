@@ -62,6 +62,15 @@ def rodar(arquivo_saida: Path | None = None) -> int:
     passo("yt-dlp carregado", versao_ytdlp)
     passo("detecção de pendrive", lambda: f"{len(listar_pendrives())} pendrive(s) conectado(s)")
 
+    def licencas() -> str:
+        pasta = baixador.pasta_do_programa() / "licencas"
+        faltando = [n for n in ("GPL-3.0.txt", "TERCEIROS.txt") if not (pasta / n).exists()]
+        if faltando:
+            raise RuntimeError(f"faltam em {pasta}: {', '.join(faltando)}")
+        return f"GPL-3.0.txt e TERCEIROS.txt em {pasta}"
+
+    passo("licenças incluídas", licencas)
+
     if ffmpeg:
         with tempfile.TemporaryDirectory(prefix="pendriveplay_teste_") as pasta:
             tmp = Path(pasta)

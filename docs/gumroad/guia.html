@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PendrivePlay - Guia de instalação e uso</title>
+<style>
+  @page { size: A4; margin: 18mm 16mm 18mm 16mm; }
+  :root { --verde: #16a34a; --texto: #1f2937; --fraco: #6b7280; --borda: #e5e7eb; --fundo: #f9fafb; }
+  * { box-sizing: border-box; }
+  body { font-family: "Segoe UI", "DejaVu Sans", Arial, sans-serif; color: var(--texto); font-size: 11pt; line-height: 1.5; margin: 0; }
+  h1 { font-size: 26pt; margin: 0 0 4px; }
+  h2 { font-size: 15pt; margin: 26px 0 8px; padding-bottom: 4px; border-bottom: 2px solid var(--verde); break-after: avoid; }
+  h3 { font-size: 12pt; margin: 16px 0 6px; break-after: avoid; }
+  p { margin: 6px 0; }
+  ol, ul { margin: 6px 0 6px 0; padding-left: 22px; }
+  li { margin: 3px 0; }
+  .capa { text-align: center; padding: 70px 0 30px; }
+  .capa .sub { font-size: 13pt; color: var(--fraco); margin-bottom: 30px; }
+  .capa img { width: 70%; border: 1px solid var(--borda); border-radius: 8px; }
+  .versao { color: var(--fraco); font-size: 10pt; margin-top: 18px; }
+  .quebra { break-before: page; }
+  .print { text-align: center; margin: 10px 0 4px; break-inside: avoid; }
+  .print img { width: 56%; border: 1px solid var(--borda); border-radius: 6px; }
+  .legenda { font-size: 9pt; color: var(--fraco); text-align: center; margin-bottom: 10px; }
+  .caixa { background: var(--fundo); border: 1px solid var(--borda); border-left: 4px solid var(--verde); border-radius: 6px; padding: 8px 12px; margin: 10px 0; break-inside: avoid; }
+  .atencao { border-left-color: #d97706; }
+  code { font-family: Consolas, "DejaVu Sans Mono", monospace; background: #f3f4f6; padding: 1px 4px; border-radius: 3px; font-size: 9.5pt; }
+  table { border-collapse: collapse; width: 100%; margin: 8px 0; font-size: 10pt; break-inside: avoid; }
+  th, td { border: 1px solid var(--borda); padding: 5px 8px; text-align: left; vertical-align: top; }
+  th { background: var(--fundo); }
+  .pasta { font-family: Consolas, "DejaVu Sans Mono", monospace; background: var(--fundo); border: 1px solid var(--borda); border-radius: 6px; padding: 8px 12px; white-space: pre; font-size: 10pt; }
+</style>
+</head>
+<body>
+
+<div class="capa">
+  <h1>PendrivePlay</h1>
+  <div class="sub">Guia de instalação e uso</div>
+  <img src="imagens/02_links_colados.png" alt="Janela do PendrivePlay">
+  <div class="versao">Versão 1.0.0 · Windows 10 e 11 (64 bits)</div>
+</div>
+
+<h2 class="quebra">1. O que é o PendrivePlay</h2>
+<p>O PendrivePlay baixa vídeos e músicas a partir de links e salva os arquivos
+direto no pendrive, já no formato que TVs antigas, Smart TVs e TV Box conseguem tocar.</p>
+<ul>
+  <li><b>Vídeo MP4 para TV:</b> 1280x720 (HD), H.264, áudio AAC. Vai para a pasta <code>VIDEOS_TV</code>.</li>
+  <li><b>Música MP3:</b> 192 kbps. Vai para a pasta <code>MP3</code>.</li>
+  <li>Vários links de uma vez, com <b>Pausar</b>, <b>Continuar</b> e <b>Cancelar</b>.</li>
+</ul>
+
+<div class="caixa atencao">
+  <b>Use com responsabilidade.</b> Baixe apenas conteúdo que você tem direito de baixar
+  (vídeos seus, conteúdo em domínio público, com licença livre ou com autorização do autor).
+  Os termos de uso de alguns sites, incluindo o YouTube, não permitem baixar conteúdo fora
+  do aplicativo deles. Respeitar esses termos e as leis de direitos autorais é responsabilidade de quem usa.
+</div>
+
+<h2>2. O que você precisa</h2>
+<ul>
+  <li>Computador com <b>Windows 10 ou 11, 64 bits</b>.</li>
+  <li>Cerca de <b>400 MB</b> livres no computador.</li>
+  <li><b>Internet</b>.</li>
+  <li>Um <b>pendrive</b> formatado em FAT32 ou exFAT (quase todo pendrive já vem assim).</li>
+</ul>
+<p>Não é preciso instalar Python, ffmpeg nem nenhum outro programa: vai tudo no instalador.</p>
+
+<h2>3. Instalar</h2>
+<ol>
+  <li>Na sua biblioteca do Gumroad, baixe o arquivo <code>.zip</code> do PendrivePlay.</li>
+  <li>Clique com o botão direito no <code>.zip</code> e escolha <b>Extrair tudo</b>.</li>
+  <li>Dê dois cliques em <code>PendrivePlay_Instalador_1.0.0.exe</code>.</li>
+  <li>Se aparecer a tela azul <b>"O Windows protegeu o computador"</b>, clique em
+      <b>Mais informações</b> e depois em <b>Executar assim mesmo</b>.
+      <br><span class="legenda">Isso acontece porque o instalador não tem assinatura digital paga.
+      Não é um vírus.</span></li>
+  <li>Leia a licença e o aviso de uso, marque <b>Eu aceito o acordo</b> e clique em <b>Avançar</b>.</li>
+  <li>Se quiser, marque <b>Criar um ícone na Área de Trabalho</b>. Clique em <b>Instalar</b> e depois em <b>Concluir</b>.</li>
+</ol>
+<div class="caixa">
+  O instalador <b>não pede senha de administrador</b>. O programa fica em
+  <code>%LOCALAPPDATA%\Programs\PendrivePlay</code> e aparece no Menu Iniciar.
+</div>
+
+<h2 class="quebra">4. Baixar para o pendrive</h2>
+
+<h3>Passo 1: conecte o pendrive e abra o programa</h3>
+<p>O pendrive aparece sozinho em <b>Salvar em</b>, com o nome e o espaço livre.
+Se ele não aparecer, clique em <b>Atualizar</b>.</p>
+<div class="print"><img src="imagens/01_tela_inicial.png" alt="Tela inicial"></div>
+<div class="legenda">Tela inicial, com o pendrive detectado.</div>
+
+<h3>Passo 2: cole os links</h3>
+<p>Cole <b>um link por linha</b>. O contador abaixo da caixa mostra quantos links foram
+reconhecidos. Links repetidos são ignorados. Também dá para usar <b>Carregar lista .txt</b>
+para trazer links de um arquivo de texto.</p>
+<p>Escolha <b>Vídeo MP4 para TV</b> ou <b>Música MP3</b> e clique em <b>Baixar</b>.</p>
+<div class="print"><img src="imagens/02_links_colados.png" alt="Links colados"></div>
+<div class="legenda">Três links colados, prontos para baixar.</div>
+
+<h3 class="quebra">Passo 3: acompanhe</h3>
+<p>Os links são baixados um de cada vez. A barra mostra o progresso total e o quadro de
+baixo mostra cada etapa.</p>
+<div class="print"><img src="imagens/03_baixando.png" alt="Baixando"></div>
+<div class="legenda">Baixando o segundo de três links.</div>
+<ul>
+  <li><b>Pausar / Continuar:</b> para o download na hora e continua de onde parou. Se a pausa
+      acontecer durante a conversão, ela vale quando o arquivo atual terminar.</li>
+  <li><b>Cancelar:</b> para tudo. O que já terminou fica no pendrive e os links que faltaram
+      voltam para a caixa.</li>
+  <li>Se um link der erro, o programa continua com os outros e, no final, deixa na caixa só
+      os links que falharam.</li>
+</ul>
+
+<h3>Passo 4: pronto</h3>
+<div class="print"><img src="imagens/04_pronto.png" alt="Pronto"></div>
+<div class="legenda">Três vídeos salvos em E:\VIDEOS_TV.</div>
+<div class="caixa atencao">
+  Antes de tirar o pendrive, clique no ícone do pendrive perto do relógio do Windows e escolha
+  <b>Ejetar</b>. Tirar sem ejetar pode corromper os arquivos.
+</div>
+
+<h2 class="quebra">5. Assistir na TV</h2>
+<ol>
+  <li>Conecte o pendrive na entrada USB da TV ou da TV Box.</li>
+  <li>Abra o aplicativo de mídia da TV (o nome muda: "USB", "Mídia", "Media Player", "Fotos e vídeos").</li>
+  <li>Entre na pasta <code>VIDEOS_TV</code> (vídeos) ou <code>MP3</code> (músicas).</li>
+</ol>
+<div class="pasta">E:\
+├── VIDEOS_TV\     vídeos MP4
+└── MP3\           músicas</div>
+<p>O formato usado (HD 720p, H.264 Baseline) é o mais aceito por TVs, inclusive modelos antigos.</p>
+
+<h2>6. Problemas comuns</h2>
+<table>
+  <tr><th style="width:34%">Problema</th><th>O que fazer</th></tr>
+  <tr><td>O pendrive não aparece</td><td>Clique em <b>Atualizar</b>. Alguns HDs externos não são reconhecidos como pendrive: use <b>Escolher outra pasta...</b> na lista "Salvar em".</td></tr>
+  <tr><td>Um link dá erro</td><td>Confira se o vídeo abre no navegador. Vídeos privados, removidos ou com restrição de idade não podem ser baixados. O motivo aparece no quadro de mensagens.</td></tr>
+  <tr><td>Nada baixa, nenhum link funciona</td><td>Os sites mudam com frequência e o programa precisa de atualização. Veja se há uma versão nova na sua biblioteca do Gumroad.</td></tr>
+  <tr><td>O antivírus bloqueou o programa</td><td>Programas feitos em Python e sem assinatura paga às vezes são marcados por engano. O código é aberto em github.com/Yuric9/PendrivePlay. Se confiar, libere o programa no antivírus.</td></tr>
+  <tr><td>A TV não mostra os vídeos</td><td>Confira se os arquivos estão na pasta <code>VIDEOS_TV</code>. Algumas TVs só leem pendrives em FAT32.</td></tr>
+  <tr><td>A pausa não para na hora</td><td>Durante a conversão, a pausa espera o arquivo atual terminar. Isso é normal.</td></tr>
+</table>
+
+<h3>Autoteste</h3>
+<p>Para conferir se a instalação está completa, abra o <b>Prompt de Comando</b> e rode:</p>
+<p><code>"%LOCALAPPDATA%\Programs\PendrivePlay\PendrivePlay.exe" --autoteste "%USERPROFILE%\Desktop\autoteste.txt"</code></p>
+<p>Um arquivo <code>autoteste.txt</code> aparece na Área de Trabalho. Se terminar com
+<b>RESULTADO: TUDO CERTO</b>, o programa está instalado corretamente.</p>
+
+<h2>7. Desinstalar</h2>
+<p>Configurações do Windows → <b>Aplicativos</b> → <b>PendrivePlay</b> → <b>Desinstalar</b>.
+Os vídeos e músicas no pendrive não são apagados.</p>
+
+<h2>8. Suporte e licenças</h2>
+<ul>
+  <li>Dúvidas e problemas: mande uma mensagem pelo Gumroad ou abra uma Issue em
+      <b>github.com/Yuric9/PendrivePlay/issues</b>. Se possível, envie o arquivo do autoteste.</li>
+  <li>O PendrivePlay é software livre (licença MIT). Ele inclui o FFmpeg (GPLv3) e o yt-dlp.
+      As licenças completas e o endereço do código-fonte ficam no botão <b>Sobre</b> do programa
+      e na pasta <code>licencas</code> da instalação.</li>
+</ul>
+
+</body>
+</html>
