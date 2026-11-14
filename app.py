@@ -13,7 +13,7 @@ from tkinter import filedialog, messagebox, ttk
 import baixador
 from pendrive import listar_pendrives
 
-VERSAO = "1.0.0"
+VERSAO = "1.1.0"
 DICA = "Cole os links aqui, um por linha..."
 
 FUNDO = "#0f1115"
@@ -22,6 +22,72 @@ TEXTO = "#e5e7eb"
 APAGADO = "#9ca3af"
 VERDE = "#22c55e"
 ESCOLHER_PASTA = "Escolher outra pasta..."
+
+
+COMO_USAR = """COMO USAR
+1. Conecte o pendrive. Ele aparece sozinho em "Salvar em".
+2. Cole os links, um por linha, ou use "Carregar lista .txt".
+3. Escolha "Vídeo MP4 para TV" ou "Música MP3" e clique em Baixar.
+4. Quando terminar, ejete o pendrive no Windows antes de tirar.
+
+PLAYLISTS
+- Vídeo aberto dentro de uma playlist (o link tem "list=" no final):
+  o programa pergunta se você quer só o vídeo ou a playlist inteira.
+- Link da própria playlist (youtube.com/playlist?list=...):
+  baixa todos os vídeos dela.
+- Cada vídeo vai para o pendrive assim que termina.
+
+NO PENDRIVE
+- Vídeos ficam na pasta VIDEOS_TV, e músicas na pasta MP3.
+- Os nomes ficam curtos, sem acentos e sem símbolos,
+  para a TV conseguir abrir.
+
+DICAS
+- Pausar para na hora; Continuar segue de onde parou.
+- Cancelar mantém o que já terminou. Os links que faltaram
+  voltam para a caixa.
+- Se um link der erro, o motivo aparece no quadro de mensagens.
+- Atalho: Ctrl+Enter na caixa de links começa a baixar.
+- Passe o mouse em cima de um botão para ver o que ele faz."""
+
+
+class Dica:
+    """Mostra um texto de ajuda quando o mouse para em cima de um elemento."""
+
+    def __init__(self, widget: tk.Widget, texto: str, espera_ms: int = 500):
+        self.widget, self.texto, self.espera_ms = widget, texto, espera_ms
+        self._agendado = None
+        self._janela: tk.Toplevel | None = None
+        widget.bind("<Enter>", self._agendar, add="+")
+        widget.bind("<Leave>", self._esconder, add="+")
+        widget.bind("<ButtonPress>", self._esconder, add="+")
+
+    def _agendar(self, _e=None) -> None:
+        self._cancelar_agenda()
+        self._agendado = self.widget.after(self.espera_ms, self.mostrar)
+
+    def _cancelar_agenda(self) -> None:
+        if self._agendado:
+            self.widget.after_cancel(self._agendado)
+            self._agendado = None
+
+    def mostrar(self) -> None:
+        if self._janela:
+            return
+        x = self.widget.winfo_rootx() + 12
+        y = self.widget.winfo_rooty() + self.widget.winfo_height() + 6
+        self._janela = tk.Toplevel(self.widget)
+        self._janela.wm_overrideredirect(True)
+        self._janela.wm_geometry(f"+{x}+{y}")
+        tk.Label(self._janela, text=self.texto, justify="left", bg="#111827", fg=TEXTO,
+                 relief="solid", bd=1, font=("Segoe UI", 9), padx=8, pady=5,
+                 wraplength=340).pack()
+
+    def _esconder(self, _e=None) -> None:
+        self._cancelar_agenda()
+        if self._janela:
+            self._janela.destroy()
+            self._janela = None
 
 
 class App:
@@ -76,7 +142,10 @@ class App:
         f.pack(fill="both", expand=True)
 
         ttk.Label(f, text="PendrivePlay", style="Titulo.TLabel").pack(anchor="w")
-        ttk.Button(f, text="Sobre", command=self.sobre).place(relx=1.0, y=0, anchor="ne")
+        topo = ttk.Frame(f)
+        topo.place(relx=1.0, y=0, anchor="ne")
+        ttk.Button(topo, text="Como usar", command=self.como_usar).pack(side="left", padx=(0, 6))
+        ttk.Button(topo, text="Sobre", command=self.sobre).pack(side="left")
         ttk.Label(f, text="Baixa e salva direto no pendrive, pronto para a TV.",
                   style="Fraco.TLabel").pack(anchor="w", pady=(0, 14))
 
@@ -96,18 +165,29 @@ class App:
         linha.pack(fill="x", pady=(6, 0))
         self.contador = ttk.Label(linha, text="Nenhum link", style="Fraco.TLabel")
         self.contador.pack(side="left")
-        ttk.Button(linha, text="Limpar", command=self.limpar_links).pack(side="right")
-        ttk.Button(linha, text="Carregar lista .txt", command=self.carregar_txt).pack(
-            side="right", padx=(0, 8))
+        botao_limpar = ttk.Button(linha, text="Limpar", command=self.limpar_links)
+        botao_limpar.pack(side="right")
+        botao_txt = ttk.Button(linha, text="Carregar lista .txt", command=self.carregar_txt)
+        botao_txt.pack(side="right", padx=(0, 8))
+        Dica(self.entrada, "Cole um link por linha. Links repetidos são ignorados.\n"
+                           "Se o link for de um vídeo dentro de uma playlist (tem \"list=\"), "
+                           "o programa pergunta se você quer só o vídeo ou a playlist inteira.")
+        Dica(botao_txt, "Traz os links de um arquivo de texto (um link por linha).")
+        Dica(botao_limpar, "Apaga todos os links da caixa.")
 
         # Formato
         self.formato = tk.StringVar(value="mp4")
         linha = ttk.Frame(f)
         linha.pack(fill="x", pady=12)
-        ttk.Radiobutton(linha, text="Vídeo MP4 para TV", variable=self.formato,
-                        value="mp4").pack(side="left", padx=(0, 20))
-        ttk.Radiobutton(linha, text="Música MP3", variable=self.formato,
-                        value="mp3").pack(side="left")
+        opcao_mp4 = ttk.Radiobutton(linha, text="Vídeo MP4 para TV", variable=self.formato,
+                                    value="mp4")
+        opcao_mp4.pack(side="left", padx=(0, 20))
+        opcao_mp3 = ttk.Radiobutton(linha, text="Música MP3", variable=self.formato, value="mp3")
+        opcao_mp3.pack(side="left")
+        Dica(opcao_mp4, "Vídeo em HD (720p) no formato que TVs antigas, Smart TVs e TV Box "
+                        "conseguem tocar. Vai para a pasta VIDEOS_TV.")
+        Dica(opcao_mp3, "Só o áudio, em MP3 192 kbps. Bom para música no carro ou no som. "
+                        "Vai para a pasta MP3.")
 
         # Destino (pendrive)
         ttk.Label(f, text="Salvar em:").pack(anchor="w")
@@ -116,8 +196,11 @@ class App:
         self.destino = ttk.Combobox(linha, state="readonly", font=("Segoe UI", 10))
         self.destino.pack(side="left", fill="x", expand=True, ipady=4)
         self.destino.bind("<<ComboboxSelected>>", self._destino_escolhido)
-        ttk.Button(linha, text="Atualizar", command=self.atualizar_destinos).pack(
-            side="left", padx=(8, 0))
+        botao_atualizar = ttk.Button(linha, text="Atualizar", command=self.atualizar_destinos)
+        botao_atualizar.pack(side="left", padx=(8, 0))
+        Dica(self.destino, "O pendrive aparece aqui sozinho quando é conectado. "
+                           "Para salvar em outro lugar, escolha \"Escolher outra pasta...\".")
+        Dica(botao_atualizar, "Procura de novo os pendrives conectados.")
         self.info_destino = ttk.Label(f, text="", style="Fraco.TLabel")
         self.info_destino.pack(anchor="w", pady=(4, 0))
 
@@ -131,8 +214,15 @@ class App:
         self.botao_pausar.pack(side="left", padx=5)
         self.botao_cancelar = ttk.Button(linha, text="Cancelar", command=self.cancelar)
         self.botao_cancelar.pack(side="left", padx=5)
-        ttk.Button(linha, text="Abrir pasta", command=self.abrir_pasta).pack(
-            side="left", padx=5)
+        botao_abrir = ttk.Button(linha, text="Abrir pasta", command=self.abrir_pasta)
+        botao_abrir.pack(side="left", padx=5)
+        Dica(self.botao, "Começa a baixar todos os links da caixa, um de cada vez. "
+                         "Cada arquivo vai para o pendrive assim que fica pronto. (Ctrl+Enter)")
+        Dica(self.botao_pausar, "Para o download na hora. Clique em Continuar para seguir de "
+                                "onde parou. Durante a conversão, pausa ao terminar o arquivo atual.")
+        Dica(self.botao_cancelar, "Para tudo. O que já terminou fica no pendrive, e os links "
+                                  "que faltaram voltam para a caixa.")
+        Dica(botao_abrir, "Abre no Windows a pasta do pendrive onde os arquivos estão sendo salvos.")
         self.botao_pausar.state(["disabled"])
         self.botao_cancelar.state(["disabled"])
 
@@ -165,8 +255,11 @@ class App:
     def _contar_links(self) -> list[str]:
         links = baixador.separar_links(self._texto_links())
         n = len(links)
-        self.contador.config(text="Nenhum link" if n == 0 else
-                             "1 link" if n == 1 else f"{n} links")
+        texto = "Nenhum link" if n == 0 else "1 link" if n == 1 else f"{n} links"
+        com_playlist = sum(baixador.tipo_link(l) != "simples" for l in links)
+        if com_playlist:
+            texto += f"  ({com_playlist} com playlist)"
+        self.contador.config(text=texto)
         return links
 
     def limpar_links(self) -> None:
@@ -240,6 +333,67 @@ class App:
                 text=f"Vídeos → {raiz / baixador.PASTA_VIDEOS}     "
                      f"Músicas → {raiz / baixador.PASTA_MP3}", foreground=APAGADO)
 
+    def _escolher_playlist(self, quantos: int) -> str | None:
+        """Pergunta o que fazer com links de vídeo dentro de playlist.
+
+        Retorna "video", "playlist" ou None (cancelou).
+        """
+        janela = tk.Toplevel(self.root)
+        janela.title("Vídeo dentro de uma playlist")
+        janela.configure(bg=FUNDO)
+        janela.transient(self.root)
+        janela.resizable(False, False)
+        escolha: dict[str, str | None] = {"valor": None}
+
+        if quantos == 1:
+            texto = ("Este link é de um vídeo aberto dentro de uma playlist.\n\n"
+                     "O que você quer baixar?")
+            so_video, inteira = "Só este vídeo", "A playlist inteira"
+        else:
+            texto = (f"{quantos} links são de vídeos abertos dentro de playlists.\n\n"
+                     "O que você quer baixar?")
+            so_video, inteira = "Só os vídeos", "As playlists inteiras"
+
+        ttk.Label(janela, text=texto, wraplength=420, justify="left").pack(
+            padx=22, pady=(20, 14), anchor="w")
+        linha = ttk.Frame(janela)
+        linha.pack(padx=22, pady=(0, 20))
+
+        def escolher(valor: str | None) -> None:
+            escolha["valor"] = valor
+            janela.destroy()
+
+        botao_video = ttk.Button(linha, text=so_video, command=lambda: escolher("video"))
+        botao_video.pack(side="left", padx=(0, 8))
+        ttk.Button(linha, text=inteira, command=lambda: escolher("playlist")).pack(
+            side="left", padx=(0, 8))
+        ttk.Button(linha, text="Cancelar", command=lambda: escolher(None)).pack(side="left")
+        janela.protocol("WM_DELETE_WINDOW", lambda: escolher(None))
+        janela.bind("<Escape>", lambda e: escolher(None))
+        janela.bind("<Return>", lambda e: escolher("video"))
+
+        janela.update_idletasks()
+        x = self.root.winfo_rootx() + (self.root.winfo_width() - janela.winfo_width()) // 2
+        y = self.root.winfo_rooty() + 120
+        janela.geometry(f"+{max(x, 0)}+{max(y, 0)}")
+        janela.grab_set()
+        botao_video.focus_set()
+        self.root.wait_window(janela)
+        return escolha["valor"]
+
+    def como_usar(self) -> None:
+        janela = tk.Toplevel(self.root)
+        janela.title("Como usar o PendrivePlay")
+        janela.configure(bg=FUNDO)
+        janela.transient(self.root)
+        texto = tk.Text(janela, width=64, height=25, bg=CAIXA, fg=TEXTO, relief="flat",
+                        font=("Segoe UI", 10), padx=14, pady=12, wrap="word")
+        texto.insert("1.0", COMO_USAR)
+        texto.config(state="disabled")
+        texto.pack(fill="both", expand=True, padx=12, pady=(12, 6))
+        ttk.Button(janela, text="Fechar", command=janela.destroy).pack(pady=(0, 12))
+        janela.bind("<Escape>", lambda e: janela.destroy())
+
     def sobre(self) -> None:
         abrir = messagebox.askyesno(
             "Sobre o PendrivePlay",
@@ -284,6 +438,18 @@ class App:
         if raiz is None:
             messagebox.showwarning("PendrivePlay", "Conecte um pendrive ou escolha uma pasta.")
             return
+
+        na_playlist = [l for l in links if baixador.tipo_link(l) == "video_na_playlist"]
+        if na_playlist:
+            escolha = self._escolher_playlist(len(na_playlist))
+            if escolha is None:
+                return
+            if escolha == "video":
+                links = list(dict.fromkeys(
+                    baixador.so_o_video(l) if l in na_playlist else l for l in links))
+                self.escrever_log("Baixando só o vídeo de cada link (sem a playlist).")
+            else:
+                self.escrever_log("Baixando as playlists inteiras.")
 
         self.ocupado = True
         self.controle = baixador.Controle()

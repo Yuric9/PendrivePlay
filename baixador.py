@@ -12,6 +12,8 @@ import subprocess
 import sys
 import tempfile
 import threading
+import unicodedata
+from urllib.parse import parse_qs, urlencode, urlparse, urlunparse
 from dataclasses import dataclass, field
 from pathlib import Path
 from typing import Callable
@@ -58,6 +60,36 @@ def preparar_destino(raiz: Path, formato: str) -> Path:
     pasta = Path(raiz) / (PASTA_VIDEOS if formato == "mp4" else PASTA_MP3)
     pasta.mkdir(parents=True, exist_ok=True)
     return pasta
+
+
+LIMITE_NOME = 60  # muitas TVs não leem nomes longos
+
+
+def nome_seguro(titulo: str, limite: int = LIMITE_NOME) -> str:
+    """Transforma o título num nome de arquivo que qualquer TV consegue ler.
+
+    - troca letras "especiais" pela versão comum (｜ -> |, ： -> :)
+    - tira acentos (Canção -> Cancao) e símbolos/emojis
+    - troca separadores (| : / etc.) por " - "
+    - corta em até `limite` caracteres, sem quebrar palavra no meio
+    """
+    texto = unicodedata.normalize("NFKC", titulo)          # ｜ -> |   ： -> :
+    texto = texto.replace("\u29f8", "/").replace("\u29f9", "\\")  # ⧸ ⧹ do yt-dlp
+    texto = unicodedata.normalize("NFKD", texto)           # ã -> a + ~
+    texto = texto.encode("ascii", "ignore").decode("ascii")  # remove ~ e emojis
+    texto = re.sub(r"(\w)[/\\](\w)", r"\1-\2", texto)       # AC/DC -> AC-DC
+    texto = re.sub(r"\s*[|:/\\]+\s*", " - ", texto)        # separadores
+    texto = re.sub(r"[^A-Za-z0-9 ()\[\]&,.'!+_-]", "", texto)  # só caracteres seguros
+    texto = re.sub(r"\s+", " ", texto)
+    texto = re.sub(r"(\s*-\s*){2,}", " - ", texto)         # "- -" vira um só
+    sobra = " .-_,(&+"  # o que não pode ficar solto no começo ou no fim
+    texto = texto.strip(sobra)
+    if len(texto) > limite:
+        corte = texto[:limite]
+        if " " in corte[limite // 2:]:
+            corte = corte[:corte.rfind(" ")]
+        texto = corte.strip(sobra)
+    return texto or "video"
 
 
 def nome_livre(pasta: Path, nome: str, ext: str) -> Path:
@@ -140,6 +172,7 @@ def converter_para_tv(ffmpeg: str, origem: Path, saida: Path,
                "pad=1280:720:(ow-iw)/2:(oh-ih)/2,setsar=1",
         "-b:v", "1500k", "-maxrate", "2000k", "-bufsize", "3000k",
         "-pix_fmt", "yuv420p",
+        "-fpsmax", "30", "-fps_mode", "cfr",  # 720p no nível 3.1 vai até 30 quadros/s
         "-c:a", "aac", "-b:a", "192k", "-ac", "2",
         "-movflags", "+faststart",
         str(saida),
@@ -171,7 +204,7 @@ def salvar_no_pendrive(ffmpeg: str, origem: Path, destino: Path, formato: str,
     if controle:
         controle.checar()  # cancelou no fim da conversão: não copia
 
-    final = nome_livre(destino, origem.stem, formato)
+    final = nome_livre(destino, nome_seguro(origem.stem), formato)
     provisorio = final.with_name(final.name + ".parcial")
     shutil.copyfile(convertido, provisorio)
     provisorio.rename(final)
@@ -221,6 +254,7 @@ def baixar(url: str, formato: str, raiz_destino: str | Path,
     from yt_dlp.utils import DownloadCancelled
 
     titulo_atual = {"nome": None}
+    partes = {"prontas": 0}  # vídeo e áudio vêm em arquivos separados
 
     def gancho(d: dict) -> None:
         # Chamado pelo yt-dlp várias vezes por segundo durante o download.
@@ -229,14 +263,21 @@ def baixar(url: str, formato: str, raiz_destino: str | Path,
             controle.checar()
         except Cancelado:
             raise DownloadCancelled("cancelado pelo usuário")
+        info = d.get("info_dict", {})
+        n_partes = len(info.get("requested_formats") or []) or 1
+        if d["status"] == "finished":
+            partes["prontas"] = min(partes["prontas"] + 1, n_partes)
         if d["status"] == "downloading":
-            nome = d.get("info_dict", {}).get("title")
+            nome = info.get("title")
             if nome and nome != titulo_atual["nome"]:
                 titulo_atual["nome"] = nome
+                partes["prontas"] = 0
                 aviso(f"Baixando: {nome}")
             total = d.get("total_bytes") or d.get("total_bytes_estimate")
             if total:
-                progresso(min(d.get("downloaded_bytes", 0) / total * 100, 100))
+                fracao = min(d.get("downloaded_bytes", 0) / total, 1)
+                # o download vai até 90%; os 10% finais são da conversão
+                progresso(min((partes["prontas"] + fracao) / n_partes, 1) * 90)
 
     registro = _Registro(aviso)
     with tempfile.TemporaryDirectory(prefix="pendriveplay_") as pasta_tmp:
@@ -281,6 +322,7 @@ def baixar(url: str, formato: str, raiz_destino: str | Path,
             aviso(f"{etapa} ({i}/{len(arquivos)}): {arq.stem}")
             salvos.append(salvar_no_pendrive(ffmpeg, arq, destino, formato, tmp, controle))
             aviso(f"Salvo: {salvos[-1]}")
+            progresso(90 + 10 * i / len(arquivos))
     return salvos
 
 
@@ -300,6 +342,102 @@ def separar_links(texto: str) -> list[str]:
     return links
 
 
+# ---------- links e playlists ----------
+
+def tipo_link(url: str) -> str:
+    """Classifica o link sem usar a internet.
+
+    "video_na_playlist": vídeo aberto dentro de uma playlist (tem v= e list=)
+    "playlist":          página da playlist (youtube.com/playlist?list=...)
+    "simples":           qualquer outro link
+    """
+    partes = urlparse(url)
+    consulta = parse_qs(partes.query)
+    if "list" not in consulta:
+        return "simples"
+    if partes.path.rstrip("/").endswith("/playlist"):
+        return "playlist"
+    if "v" in consulta or partes.netloc.endswith("youtu.be"):
+        return "video_na_playlist"
+    return "playlist"
+
+
+def so_o_video(url: str) -> str:
+    """Tira a playlist do link, deixando só o vídeo.
+
+    https://www.youtube.com/watch?v=ABC&list=PL1&index=2 -> https://www.youtube.com/watch?v=ABC
+    """
+    partes = urlparse(url)
+    consulta = parse_qs(partes.query)
+    for chave in ("list", "index", "start_radio", "pp"):
+        consulta.pop(chave, None)
+    return urlunparse(partes._replace(query=urlencode(consulta, doseq=True)))
+
+
+def _itens_da_playlist(info: dict) -> list[tuple[str, str]]:
+    """Extrai (link, título) de cada vídeo da resposta do yt-dlp."""
+    itens: list[tuple[str, str]] = []
+    for entrada in info.get("entries") or []:
+        if not entrada:  # vídeo indisponível/removido
+            continue
+        link = entrada.get("url") or entrada.get("webpage_url")
+        if link and not link.startswith("http"):
+            link = None
+        if not link and entrada.get("id") and entrada.get("ie_key", "Youtube") == "Youtube":
+            link = f"https://www.youtube.com/watch?v={entrada['id']}"
+        if link and all(link != l for l, _ in itens):
+            itens.append((link, entrada.get("title") or link))
+    return itens
+
+
+def listar_playlist(url: str, aviso: Aviso = print) -> list[tuple[str, str]]:
+    """Busca a lista de vídeos de uma playlist (só os links, sem baixar nada)."""
+    from yt_dlp import YoutubeDL
+
+    registro = _Registro(aviso)
+    opcoes = {"extract_flat": "in_playlist", "noplaylist": False, "logger": registro,
+              "ignoreerrors": True, "noprogress": True}
+    with YoutubeDL(opcoes) as ydl:
+        info = ydl.extract_info(url, download=False) or {}
+    if info.get("_type") not in ("playlist", "multi_video"):
+        return [(url, info.get("title") or url)]   # no fim era um vídeo só
+    itens = _itens_da_playlist(info)
+    if not itens:
+        motivo = registro.erros[-1] if registro.erros else "playlist vazia ou privada"
+        raise RuntimeError(f"Não consegui ler a playlist ({motivo}).")
+    return itens
+
+
+def montar_fila(links: list[str], aviso: Aviso = print,
+                controle: Controle | None = None) -> tuple[list[tuple[str, str]], dict[str, str]]:
+    """Transforma a lista de links numa fila de vídeos.
+
+    Cada playlist vira um item por vídeo, para que cada um seja salvo no pendrive
+    assim que terminar. Retorna (fila, erros).
+    """
+    fila: list[tuple[str, str]] = []
+    erros: dict[str, str] = {}
+    for link in links:
+        if controle:
+            controle.checar()
+        if tipo_link(link) == "simples":
+            itens = [(link, link)]
+        else:
+            aviso(f"Lendo a playlist: {link}")
+            try:
+                itens = listar_playlist(link, aviso)
+            except Exception as erro:
+                erros[link] = str(erro)
+                aviso(f"Erro na playlist, indo para o próximo: {erro}")
+                continue
+            if len(itens) > 1:
+                aviso(f"Playlist com {len(itens)} vídeos.")
+        for item in itens:
+            if all(item[0] != l for l, _ in fila):
+                fila.append(item)
+    return fila, erros
+
+
 @dataclass
 class Resultado:
     salvos: list[Path] = field(default_factory=list)
@@ -311,17 +449,25 @@ class Resultado:
 def baixar_varios(links: list[str], formato: str, raiz_destino: str | Path,
                   aviso: Aviso = print, progresso: Progresso = lambda p: None,
                   controle: Controle | None = None) -> Resultado:
-    """Baixa vários links, um de cada vez.
+    """Baixa vários links, um vídeo de cada vez.
 
-    Se um link der erro, anota e continua com os próximos.
+    Playlists viram um item por vídeo: cada um é salvo no pendrive assim que termina.
+    Se um vídeo der erro, anota e continua com os próximos.
     Se o usuário cancelar, para e guarda em "pendentes" os links que faltaram.
-    A barra de progresso vai de 0 a 100 considerando todos os links.
+    A barra de progresso vai de 0 a 100 considerando todos os vídeos.
     """
     controle = controle or Controle()
     resultado = Resultado()
-    total = len(links)
-    for i, link in enumerate(links):
-        aviso(f"[{i + 1}/{total}] {link}")
+    try:
+        fila, resultado.erros = montar_fila(links, aviso, controle)
+    except Cancelado:
+        resultado.cancelado = True
+        resultado.pendentes = list(links)
+        return resultado
+    links = [link for link, _ in fila]
+    total = len(fila)
+    for i, (link, titulo) in enumerate(fila):
+        aviso(f"[{i + 1}/{total}] {titulo}")
 
         def progresso_geral(p: float, i=i) -> None:
             progresso((i + p / 100) / total * 100)

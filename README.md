@@ -16,6 +16,16 @@ Os links são baixados um de cada vez. Se algum der erro, o programa continua
 com os outros e, no final, deixa na caixa só os que falharam, para você tentar
 de novo. Links repetidos e linhas começando com `#` são ignorados.
 
+**Playlists:** se o link for de um vídeo aberto dentro de uma playlist (tem `list=`), o
+programa pergunta se você quer só o vídeo ou a playlist inteira. Uma playlist vira uma fila:
+cada vídeo é salvo no pendrive assim que termina, com a contagem `[5/63]`.
+
+**Nomes compatíveis com TV:** os arquivos são salvos com nomes curtos (até 60 caracteres),
+sem acentos e sem símbolos. Nomes longos ou com caracteres especiais fazem muitas TVs
+mostrarem "arquivo não reconhecido".
+
+**Ajuda:** botão **Como usar** e dicas ao parar o mouse em cima de cada botão.
+
 **Pausar e cancelar:**
 
 - **Pausar** para o download na hora; **Continuar** retoma de onde parou. Se a
@@ -40,7 +50,7 @@ não fica arquivo pela metade com nome de arquivo bom.
 
 | Formato | Detalhes |
 |---|---|
-| MP4 para TV | 1280x720, H.264 baseline nível 3.1, AAC 192k, faststart |
+| MP4 para TV | 1280x720, H.264 baseline nível 3.1, até 30 fps, AAC 192k, faststart |
 | MP3 | 192 kbps, 44.1 kHz |
 
 Links de playlist baixam todos os vídeos.
