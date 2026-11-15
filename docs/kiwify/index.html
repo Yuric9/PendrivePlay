@@ -3,10 +3,10 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>PendrivePlay: sua TV abrindo os vídeos do pendrive de primeira</title>
-<meta name="description" content="Você escolhe o seu link e o PendrivePlay baixa, converte para o formato que a TV aceita e salva direto no pendrive. R$ 19,90, garantia de 7 dias.">
-<meta property="og:title" content="PendrivePlay: do link para o pendrive, pronto para a TV">
-<meta property="og:description" content="Cole os links, clique em Baixar e leve vídeos e músicas para a TV no formato certo. Garantia de 7 dias.">
+<title>PendrivePlay: transforme sua TV antiga em TV multimídia</title>
+<meta name="description" content="Assista seus clipes e ouça suas músicas favoritas na TV antiga, direto do pendrive e sem internet. R$ 19,90, garantia de 7 dias.">
+<meta property="og:title" content="PendrivePlay: sua TV antiga virou TV multimídia">
+<meta property="og:description" content="Clipes e músicas favoritas na TV, direto do pendrive, sem precisar de internet. Garantia de 7 dias.">
 <meta property="og:image" content="img/04_pronto.png">
 <meta name="theme-color" content="#05070a">
 <script>
@@ -112,8 +112,22 @@
   }
   .tv-pe { width: 38%; height: 14px; margin: 0 auto; background: #1b232c; border-radius: 0 0 14px 14px; }
   .tv-base { width: 56%; height: 10px; margin: 6px auto 0; background: #121920; border-radius: 10px; }
+  .tela-usb { aspect-ratio: 4 / 3; background: radial-gradient(circle at 30% 20%, #0f2f22, #020604 70%); padding: 6% 7%; display: flex; flex-direction: column; gap: 4%; }
+  .tela-topo { display: flex; justify-content: space-between; color: #a7f3d0; font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; letter-spacing: 1px; }
+  .tocando-agora { flex: 1; border-radius: 12px; background: linear-gradient(135deg, rgba(57,255,136,.22), rgba(34,211,238,.18)); border: 1px solid rgba(57,255,136,.35); display: flex; align-items: center; gap: 5%; padding: 0 6%; }
+  .tocando-agora .play { width: clamp(44px, 6vw, 70px); height: clamp(44px, 6vw, 70px); flex: none; }
+  .tocando-agora b { display: block; font-size: clamp(14px, 1.8vw, 22px); color: #fff; line-height: 1.2; }
+  .tocando-agora span { color: #a7f3d0; font-size: clamp(11px, 1.2vw, 14px); }
+  .eq { display: flex; align-items: flex-end; gap: 4px; height: 34px; margin-left: auto; }
+  .eq i { width: 6px; height: 40%; background: var(--neon); border-radius: 3px; animation: eq 1s ease-in-out infinite; }
+  .eq i:nth-child(2) { animation-delay: .2s; } .eq i:nth-child(3) { animation-delay: .4s; } .eq i:nth-child(4) { animation-delay: .1s; }
+  @keyframes eq { 0%, 100% { height: 20%; } 50% { height: 100%; } }
+  .arquivos { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
+  .arquivos li { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.05); border-radius: 8px; padding: 7px 12px; color: #d1fae5; font-size: clamp(11px, 1.25vw, 15px); }
+  .arquivos li::before { content: "▶"; color: var(--neon); font-size: .8em; }
+  .arquivos li.musica::before { content: "♪"; }
   .usb {
-    position: absolute; left: -26px; bottom: 70px; background: var(--neon); color: #03140a; font-weight: 800;
+    position: absolute; left: -26px; bottom: 8px; background: var(--neon); color: #03140a; font-weight: 800;
     font-size: 13px; padding: 8px 12px; border-radius: 10px; transform: rotate(-6deg);
     box-shadow: 0 10px 30px rgba(57, 255, 136, .35);
   }
@@ -276,16 +290,16 @@
 <body>
 <a class="pular" href="#oferta">Pular para a oferta</a>
 
-<div class="faixa-topo">✓ Funciona em <strong>TVs antigas, Smart TVs e TV Box</strong> · Pagamento por PIX ou cartão</div>
+<div class="faixa-topo">✓ Para TVs com <strong>entrada USB</strong> · Assista <strong>sem internet</strong> · PIX ou cartão</div>
 
 <main>
   <!-- HERO -->
   <section class="hero" aria-labelledby="titulo-principal">
     <div class="container">
       <div class="revelar">
-        <span class="etiqueta"><span class="ponto" aria-hidden="true"></span>Programa para Windows · em português</span>
-        <h1 id="titulo-principal">Sua TV diz <span class="riscado">"arquivo não reconhecido"</span>? <span class="neon">Resolva em 3 cliques.</span></h1>
-        <p class="sub">Você escolhe o seu link, cola no <strong>PendrivePlay</strong> e ele <strong>baixa, converte e salva direto no pendrive</strong>, no formato que a TV aceita.</p>
+        <span class="etiqueta"><span class="ponto" aria-hidden="true"></span>Sua TV não é Smart? Sem problema.</span>
+        <h1 id="titulo-principal">Transforme sua TV antiga em uma <span class="neon">TV multimídia.</span></h1>
+        <p class="sub">Assista seus <strong>clipes favoritos</strong> e ouça suas <strong>músicas preferidas</strong> direto do pendrive, <strong>sem precisar de internet na TV</strong>. Você escolhe o link, e o PendrivePlay baixa e converte tudo no formato que a sua TV lê.</p>
         <a class="cta comprar" href="#oferta">Quero o PendrivePlay <span aria-hidden="true">→</span></a>
         <div class="selos">
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Garantia de 7 dias</span>
@@ -293,13 +307,25 @@
           <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>PIX ou cartão</span>
         </div>
       </div>
-      <div class="tv revelar" aria-hidden="false">
+      <div class="tv revelar" role="img" aria-label="TV comum tocando um clipe direto do pendrive, com a lista de vídeos e músicas">
         <div class="tv-tela">
-          <img src="img/04_pronto.png" alt="Janela do PendrivePlay com três vídeos salvos na pasta VIDEOS_TV do pendrive" width="720" height="680">
+          <div class="tela-usb" aria-hidden="true">
+            <div class="tela-topo"><span>USB · VIDEOS_TV</span><span>SEM INTERNET ✓</span></div>
+            <div class="tocando-agora">
+              <div class="play"></div>
+              <div><b>Meu clipe favorito</b><span>Tocando do pendrive</span></div>
+              <div class="eq"><i></i><i></i><i></i><i></i></div>
+            </div>
+            <ul class="arquivos">
+              <li>Show ao vivo.mp4</li>
+              <li>Clipe dos anos 80.mp4</li>
+              <li class="musica">Musica do momento.mp3</li>
+            </ul>
+          </div>
         </div>
         <div class="tv-pe" aria-hidden="true"></div>
         <div class="tv-base" aria-hidden="true"></div>
-        <div class="usb" aria-hidden="true">USB ✓ pronto</div>
+        <div class="usb" aria-hidden="true">Pendrive ✓</div>
       </div>
     </div>
   </section>
@@ -308,13 +334,13 @@
   <section class="alt" aria-labelledby="dores">
     <div class="container">
       <div class="titulo revelar">
-        <span class="chapeu">Você já passou por isso?</span>
-        <h2 id="dores">Colocar vídeo no pendrive não deveria ser difícil</h2>
+        <span class="chapeu">Sua TV ainda tem muito para dar</span>
+        <h2 id="dores">Não troque de TV só para assistir seus vídeos</h2>
       </div>
       <div class="dores">
-        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>A TV não abre o vídeo</h3><p>Você copia o arquivo, liga na TV e aparece "formato não suportado" ou "arquivo não reconhecido".</p></div>
-        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>Nomes que travam a TV</h3><p>Nomes enormes, com acentos e símbolos, fazem muitas TVs nem listarem o arquivo.</p></div>
-        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>Programas complicados</h3><p>Conversores cheios de opções, sites com propaganda e tutoriais de linha de comando.</p></div>
+        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>Sem Smart, sem aplicativos</h3><p>A TV funciona perfeitamente, mas não tem aplicativos de vídeo e música. Trocar por uma Smart custa caro.</p></div>
+        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>Internet fraca ou cara</h3><p>Assistir vídeo pela internet trava, consome dados e depende do sinal. No pendrive, o vídeo está sempre lá.</p></div>
+        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>"Arquivo não suportado"</h3><p>Você copia um vídeo para o pendrive e a TV não abre. O formato e o nome do arquivo precisam estar certos.</p></div>
       </div>
     </div>
   </section>
@@ -323,8 +349,8 @@
   <section aria-labelledby="antes-depois">
     <div class="container">
       <div class="titulo revelar">
-        <span class="chapeu">A diferença</span>
-        <h2 id="antes-depois">Do erro na tela ao vídeo tocando</h2>
+        <span class="chapeu">A transformação</span>
+        <h2 id="antes-depois">A mesma TV, uma nova vida</h2>
       </div>
       <div class="antes-depois">
         <div class="quadro antes revelar">
@@ -332,7 +358,7 @@
           <div class="mini-tv" role="img" aria-label="TV mostrando mensagem de arquivo não suportado">
             <div class="erro-tv"><b>Arquivo não suportado</b>Não é possível reproduzir este arquivo.</div>
           </div>
-          <ul><li>Formato que a TV não aceita</li><li>Nome com símbolos e acentos</li><li>Arquivos espalhados pelo pendrive</li></ul>
+          <ul><li>Só os canais de sempre</li><li>Vídeo do pendrive que a TV não abre</li><li>Clipes e músicas só no celular</li></ul>
         </div>
         <div class="seta" aria-hidden="true">➜</div>
         <div class="quadro depois revelar">
@@ -341,7 +367,7 @@
             <div class="play"></div>
             <div class="barra-tv"><span></span></div>
           </div>
-          <ul><li>MP4 em HD (720p), H.264, que a TV abre</li><li>Nomes curtos e simples</li><li>Tudo organizado em pastas</li></ul>
+          <ul><li>Seus clipes favoritos na tela grande</li><li>Músicas tocando pela TV ou pelo som</li><li>Sem internet, sem travar, sem mensalidade</li></ul>
         </div>
       </div>
     </div>
@@ -352,26 +378,26 @@
     <div class="container">
       <div class="titulo revelar">
         <span class="chapeu">Como funciona</span>
-        <h2 id="como">Três passos. Sem complicação.</h2>
-        <p>Escolha o seu link, cole no programa e clique em Baixar. O resto é com ele.</p>
+        <h2 id="como">Do computador para a TV em 3 passos</h2>
+        <p>Você prepara o pendrive no computador uma vez e assiste na TV quantas vezes quiser.</p>
       </div>
       <div class="passos">
         <div class="passo revelar">
           <div class="img"><img src="img/02_links_colados.png" alt="Links colados na caixa do PendrivePlay com o pendrive detectado" loading="lazy" width="720" height="680"></div>
-          <div class="texto"><span class="num">1</span><h3>Escolha o seu link</h3><p>Cole um ou vários links, um por linha, ou carregue uma lista em .txt. O pendrive aparece sozinho.</p></div>
+          <div class="texto"><span class="num">1</span><h3>Escolha seus clipes e músicas</h3><p>No computador, cole o link de cada vídeo ou música que você quer. Pode ser um ou vários de uma vez.</p></div>
         </div>
         <div class="passo revelar">
           <div class="img"><img src="img/03_baixando.png" alt="PendrivePlay baixando e convertendo, com a barra de progresso" loading="lazy" width="720" height="680"></div>
-          <div class="texto"><span class="num">2</span><h3>Clique em Baixar</h3><p>Ele baixa e converte cada vídeo para o formato da TV, um por um.</p></div>
+          <div class="texto"><span class="num">2</span><h3>O PendrivePlay prepara tudo</h3><p>Ele baixa, converte para o formato que a TV lê e salva direto no pendrive, organizado em pastas.</p></div>
         </div>
         <div class="passo revelar">
           <div class="img"><img src="img/04_pronto.png" alt="Três vídeos salvos na pasta VIDEOS_TV do pendrive" loading="lazy" width="720" height="680"></div>
-          <div class="texto"><span class="num">3</span><h3>Ligue na TV</h3><p>Cada arquivo vai para o pendrive assim que fica pronto. É só plugar e assistir.</p></div>
+          <div class="texto"><span class="num">3</span><h3>Plugue na TV e assista</h3><p>Coloque o pendrive na entrada USB da TV e assista, sem internet. Também funciona no som e no carro.</p></div>
         </div>
       </div>
       <div class="pastas revelar" aria-label="Pastas criadas no pendrive">E:\
-├── VIDEOS_TV\   vídeos MP4 em HD
-└── MP3\         músicas</div>
+├── VIDEOS_TV\   seus clipes e vídeos
+└── MP3\         suas músicas</div>
     </div>
   </section>
 
@@ -380,12 +406,12 @@
     <div class="container">
       <div class="titulo revelar">
         <span class="chapeu">Recursos</span>
-        <h2 id="recursos">Tudo o que você precisa, nada que atrapalhe</h2>
+        <h2 id="recursos">Feito para quem quer praticidade</h2>
       </div>
       <div class="recursos">
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="13" rx="2"/><path d="M8 21h8M12 18v3"/></svg><h3>Formato de TV</h3><p>MP4 720p, H.264, até 30 quadros por segundo: o padrão que TVs antigas e TV Box aceitam.</p></div>
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><h3>Música em MP3</h3><p>Só o áudio, em 192 kbps, numa pasta separada. Perfeito para o carro e o som.</p></div>
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><h3>Vários links de uma vez</h3><p>Cole quantos links quiser. Se o link for de uma lista de vídeos, ele pergunta se você quer só um ou a lista inteira.</p></div>
+        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="13" rx="2"/><path d="M8 21h8M12 18v3"/></svg><h3>Formato que a TV lê</h3><p>Vídeo em HD (720p) no padrão mais aceito por TVs com USB, inclusive modelos antigos e TV Box.</p></div>
+        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><h3>Suas músicas em MP3</h3><p>Só o áudio, com boa qualidade, numa pasta separada. Para ouvir na TV, no som ou no carro.</p></div>
+        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><h3>Vários de uma vez</h3><p>Monte a sua seleção de clipes e músicas de uma vez só. O programa baixa um por um, sozinho.</p></div>
         <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7"/></svg><h3>Nomes que a TV lê</h3><p>Salva com nomes curtos, sem acentos e sem símbolos, para a TV listar todos os arquivos.</p></div>
         <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><h3>Pausar e cancelar</h3><p>Pause e continue de onde parou. Cancelou? O que já terminou continua no pendrive.</p></div>
         <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><h3>Instalação simples</h3><p>Não pede senha de administrador e já vem com tudo o que precisa. Inclui guia em PDF.</p></div>
@@ -401,15 +427,17 @@
         <div class="cartao-p revelar">
           <h3>Sim, se você…</h3>
           <ul class="lista">
-            <li><span class="ok" aria-hidden="true">✓</span><span>quer levar vídeos e músicas para a TV, o carro ou o som pelo pendrive</span></li>
-            <li><span class="ok" aria-hidden="true">✓</span><span>tem TV antiga que não abre qualquer MP4</span></li>
-            <li><span class="ok" aria-hidden="true">✓</span><span>quer algo simples, sem linha de comando e sem vários programas</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>tem uma TV sem Smart, mas com entrada USB</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>quer assistir clipes e ouvir músicas sem depender de internet na TV</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>quer levar músicas para o som ou para o carro pelo pendrive</span></li>
+            <li><span class="ok" aria-hidden="true">✓</span><span>quer algo simples, sem complicação</span></li>
           </ul>
         </div>
         <div class="cartao-p revelar">
           <h3>Não, se você…</h3>
           <ul class="lista">
-            <li><span class="nao" aria-hidden="true">✕</span><span>usa Mac ou Linux (é só para Windows 10 e 11)</span></li>
+            <li><span class="nao" aria-hidden="true">✕</span><span>tem TV sem entrada USB e nenhum aparelho com USB ligado nela (como TV Box ou DVD)</span></li>
+            <li><span class="nao" aria-hidden="true">✕</span><span>não tem computador com Windows 10 ou 11 (o programa roda no computador)</span></li>
             <li><span class="nao" aria-hidden="true">✕</span><span>precisa de vídeo em 4K ou Full HD (ele gera 720p, para funcionar em mais TVs)</span></li>
             <li><span class="nao" aria-hidden="true">✕</span><span>quer baixar conteúdo pago, privado ou protegido (ele não faz isso)</span></li>
           </ul>
@@ -424,9 +452,9 @@
       <div class="oferta revelar">
         <div class="oferta-dentro">
           <div>
-            <h2 id="titulo-oferta">Leve o PendrivePlay hoje</h2>
+            <h2 id="titulo-oferta">Dê vida nova à sua TV hoje</h2>
             <ul class="itens">
-              <li>Instalador do PendrivePlay para Windows 10 e 11</li>
+              <li>PendrivePlay para Windows 10 e 11 (você instala no computador)</li>
               <li>Guia de instalação e uso em PDF, com imagens</li>
               <li>Atualizações gratuitas quando os sites mudarem</li>
               <li>Suporte por mensagem</li>
@@ -451,7 +479,7 @@
         <div class="selo-7" aria-hidden="true"><div><b>7</b><span>dias de<br>garantia</span></div></div>
         <div>
           <h3 id="garantia">Risco zero para você</h3>
-          <p>Instale, teste com os seus links e leve para a sua TV. Se não gostar, por qualquer motivo, peça o reembolso em até 7 dias e você recebe 100% do valor de volta, sem perguntas.</p>
+          <p>Instale, prepare o seu pendrive e teste na sua TV. Se não gostar, por qualquer motivo, peça o reembolso em até 7 dias e você recebe 100% do valor de volta, sem perguntas.</p>
         </div>
       </div>
     </div>
@@ -462,9 +490,12 @@
     <div class="container">
       <div class="titulo revelar"><span class="chapeu">Dúvidas</span><h2 id="faq">Perguntas frequentes</h2></div>
       <div class="faq">
+        <details class="revelar"><summary>Minha TV precisa ser Smart?</summary><p>Não. Ela só precisa ter uma entrada USB que toque vídeos e músicas, como a maioria das TVs LCD e LED dos últimos anos. Procure "USB" na lateral ou atrás da TV, e "Mídia" ou "USB" no controle remoto.</p></details>
+        <details class="revelar"><summary>Preciso de internet para assistir?</summary><p>Na TV, não: tudo toca direto do pendrive. Você só precisa de internet no computador, na hora de baixar os vídeos e as músicas.</p></details>
+        <details class="revelar"><summary>Minha TV é de tubo e não tem USB. Funciona?</summary><p>Sozinha, não. Mas funciona se você ligar nela um aparelho com entrada USB, como um TV Box ou um DVD com USB.</p></details>
         <details class="revelar"><summary>Como eu recebo o programa?</summary><p>Logo depois da confirmação do pagamento, você recebe por e-mail o acesso ao instalador e ao guia em PDF. No PIX, a confirmação costuma ser em poucos minutos.</p></details>
         <details class="revelar"><summary>Que links eu posso usar?</summary><p>Links de vídeos e músicas de muitos sites. O programa usa o yt-dlp, uma ferramenta de código aberto compatível com centenas de sites. Você escolhe o link, e ele baixa e converte.</p></details>
-        <details class="revelar"><summary>O que eu preciso para usar?</summary><p>Um computador com Windows 10 ou 11 (64 bits), internet e um pendrive formatado em FAT32 ou exFAT (quase todo pendrive já vem assim).</p></details>
+        <details class="revelar"><summary>O que eu preciso para usar?</summary><p>Um computador com Windows 10 ou 11 (64 bits) e internet para baixar, um pendrive (quase todo pendrive já vem pronto para TV) e uma TV ou aparelho com entrada USB.</p></details>
         <details class="revelar"><summary>O Windows mostrou "O Windows protegeu o computador". É vírus?</summary><p>Não. O aviso aparece porque o instalador não tem uma assinatura digital paga. Clique em "Mais informações" e depois em "Executar assim mesmo". O passo a passo está no guia.</p></details>
         <details class="revelar"><summary>E se o antivírus bloquear?</summary><p>Programas feitos em Python e sem assinatura paga às vezes são marcados por engano. O código é aberto, e qualquer pessoa pode conferir no GitHub.</p></details>
         <details class="revelar"><summary>Um dia parou de baixar. E agora?</summary><p>Os sites mudam com frequência. Quando isso acontecer, uma versão nova será disponibilizada sem custo para quem já comprou.</p></details>
@@ -484,8 +515,8 @@
   <!-- CHAMADA FINAL -->
   <section class="final alt">
     <div class="container revelar">
-      <h2>Sua TV pronta para o pendrive <span class="neon">ainda hoje.</span></h2>
-      <p>Instale em um minuto, cole os links e leve tudo para a TV.</p>
+      <h2>Sua TV antiga, agora <span class="neon">multimídia.</span></h2>
+      <p>Seus clipes e músicas favoritos na tela grande, direto do pendrive e sem internet.</p>
       <a class="cta comprar" href="#oferta">Quero por <span data-preco>R$ 19,90</span></a>
       <div class="selos">
         <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Garantia de 7 dias</span>
