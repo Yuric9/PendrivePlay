@@ -1,0 +1,302 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<title>PendrivePlay - vídeo explicativo</title>
+<!--
+  Vídeo vertical (1080x1920) desenhado com HTML/CSS.
+  A função render(t) posiciona tudo para o segundo t; o script gerar_video.js
+  chama render() quadro a quadro e junta as imagens num MP4 com o ffmpeg.
+  Abrindo no navegador, a animação toca sozinha em tempo real.
+-->
+<style>
+  :root { --neon: #39ff88; --neon2: #22c55e; --ciano: #22d3ee; --texto: #eef6f1; --texto2: #9fb0a8; --perigo: #ff5d6c; }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html, body { width: 1080px; height: 1920px; overflow: hidden; background: #05070a; }
+  body { font-family: "Inter", "Segoe UI", system-ui, sans-serif; color: var(--texto); }
+  #palco { position: relative; width: 1080px; height: 1920px; overflow: hidden;
+    background: radial-gradient(900px 700px at 20% 15%, rgba(57,255,136,.14), transparent 70%),
+                radial-gradient(800px 700px at 90% 85%, rgba(34,211,238,.12), transparent 70%), #05070a; }
+  .brilho { position: absolute; width: 900px; height: 900px; border-radius: 50%; filter: blur(80px); opacity: .35; }
+  .cena { position: absolute; inset: 0; opacity: 0; }
+  .neon { color: var(--neon); text-shadow: 0 0 40px rgba(57,255,136,.5); }
+
+  /* legenda do topo */
+  .legenda { position: absolute; left: 70px; right: 70px; top: 170px; text-align: center; }
+  .passo-num { display: inline-flex; align-items: center; gap: 14px; background: rgba(57,255,136,.12); border: 2px solid rgba(57,255,136,.45);
+    color: var(--neon); font-weight: 800; font-size: 34px; padding: 10px 26px; border-radius: 999px; letter-spacing: 1px; }
+  .legenda h2 { font-size: 78px; line-height: 1.08; letter-spacing: -2px; font-weight: 850; margin-top: 30px; }
+  .legenda p { font-size: 40px; color: var(--texto2); margin-top: 22px; line-height: 1.3; }
+
+  /* TV desenhada */
+  .tv { position: absolute; left: 90px; width: 900px; }
+  .tv-tela { position: relative; border: 26px solid #1b232c; border-radius: 34px; background: #000; overflow: hidden; aspect-ratio: 4 / 3;
+    box-shadow: 0 0 0 3px #2a3540, 0 40px 120px rgba(0,0,0,.7), 0 0 140px rgba(57,255,136,.22); }
+  .tv-pe { width: 36%; height: 26px; margin: 0 auto; background: #1b232c; border-radius: 0 0 20px 20px; }
+  .tv-base { width: 54%; height: 18px; margin: 8px auto 0; background: #121920; border-radius: 14px; }
+  .chiado { position: absolute; inset: 0; background: repeating-linear-gradient(0deg, #222 0 3px, #111 3px 6px); }
+  .canal { position: absolute; top: 40px; right: 50px; font-family: "DejaVu Sans Mono", monospace; font-size: 54px; color: #b6ff9e; text-shadow: 0 0 12px #6f6; }
+  .tela-usb { position: absolute; inset: 0; background: radial-gradient(circle at 30% 20%, #0f2f22, #020604 70%); padding: 44px 50px; display: flex; flex-direction: column; gap: 26px; }
+  .tela-topo { display: flex; justify-content: space-between; color: #a7f3d0; font-size: 30px; font-weight: 800; letter-spacing: 2px; }
+  .tocando { flex: 1; border-radius: 22px; background: linear-gradient(135deg, rgba(57,255,136,.25), rgba(34,211,238,.2)); border: 2px solid rgba(57,255,136,.4);
+    display: flex; align-items: center; gap: 34px; padding: 0 40px; }
+  .play { width: 120px; height: 120px; border-radius: 50%; background: var(--neon); display: grid; place-items: center; box-shadow: 0 0 60px rgba(57,255,136,.7); flex: none; }
+  .play::after { content: ""; border-left: 40px solid #03140a; border-top: 25px solid transparent; border-bottom: 25px solid transparent; margin-left: 10px; }
+  .tocando b { display: block; font-size: 46px; }
+  .tocando span { color: #a7f3d0; font-size: 30px; }
+  .eq { display: flex; align-items: flex-end; gap: 9px; height: 80px; margin-left: auto; }
+  .eq i { width: 14px; background: var(--neon); border-radius: 6px; }
+  .progresso-tv { height: 12px; background: rgba(255,255,255,.15); border-radius: 8px; overflow: hidden; }
+  .progresso-tv span { display: block; height: 100%; background: var(--neon); }
+  .lista-tv { display: grid; gap: 14px; }
+  .lista-tv div { background: rgba(255,255,255,.06); border-radius: 14px; padding: 16px 24px; font-size: 32px; color: #d1fae5; }
+  .lista-tv div::before { content: "▶  "; color: var(--neon); }
+
+  /* notebook com o programa */
+  .notebook { position: absolute; left: 100px; width: 880px; }
+  .notebook .moldura { border: 18px solid #1b232c; border-bottom-width: 26px; border-radius: 28px 28px 10px 10px; background: #000; overflow: hidden; position: relative;
+    box-shadow: 0 40px 120px rgba(0,0,0,.7), 0 0 120px rgba(34,211,238,.15); }
+  .notebook img { width: 100%; display: block; }
+  .notebook .teclado { height: 34px; margin: 0 -60px; background: linear-gradient(#2a3540, #141b22); border-radius: 0 0 40px 40px; }
+  .img-sobre { position: absolute; inset: 0; }
+  .cursor { position: absolute; width: 70px; height: 70px; filter: drop-shadow(0 6px 10px rgba(0,0,0,.6)); }
+  .clique { position: absolute; width: 140px; height: 140px; border-radius: 50%; border: 6px solid var(--neon); }
+  .tecla { position: absolute; background: #f8fafc; color: #0b1015; font-weight: 900; font-size: 46px; padding: 16px 30px; border-radius: 18px;
+    box-shadow: 0 10px 0 #94a3b8, 0 20px 40px rgba(0,0,0,.5); }
+
+  /* pendrive e pastas */
+  .pendrive { position: absolute; left: 340px; width: 400px; }
+  .pd-conector { width: 170px; height: 120px; margin: 0 auto; border: 14px solid #cbd5e1; border-bottom: 0; border-radius: 10px 10px 0 0; position: relative; }
+  .pd-conector::before, .pd-conector::after { content: ""; position: absolute; top: 34px; width: 34px; height: 30px; background: #cbd5e1; }
+  .pd-conector::before { left: 30px; } .pd-conector::after { right: 30px; }
+  .pd-corpo { height: 420px; border-radius: 40px; background: linear-gradient(160deg, #22c55e, #15803d); display: grid; place-items: center;
+    box-shadow: 0 30px 80px rgba(34,197,94,.35); }
+  .pd-corpo svg { width: 150px; height: 150px; }
+  .pastas { position: absolute; left: 110px; right: 110px; display: grid; gap: 22px; }
+  .pasta { background: #0f161d; border: 2px solid #1f2b36; border-radius: 24px; padding: 26px 32px; }
+  .pasta h3 { font-size: 40px; display: flex; gap: 16px; align-items: center; }
+  .pasta h3::before { content: ""; width: 54px; height: 42px; background: linear-gradient(#fde047, #eab308); border-radius: 6px 6px 8px 8px; clip-path: polygon(0 0, 40% 0, 50% 18%, 100% 18%, 100% 100%, 0 100%); }
+  .arquivo { font-size: 34px; color: #d1fae5; padding: 12px 0 0 72px; }
+  .arquivo::before { content: "▶  "; color: var(--neon); }
+  .arquivo.musica::before { content: "♪  "; }
+
+  /* selo sem internet */
+  .selo { position: absolute; background: var(--neon); color: #03140a; font-weight: 900; font-size: 44px; padding: 18px 32px; border-radius: 20px;
+    box-shadow: 0 20px 60px rgba(57,255,136,.45); white-space: nowrap; }
+
+  /* final */
+  .marca { display: flex; align-items: center; justify-content: center; gap: 28px; font-size: 110px; font-weight: 900; letter-spacing: -3px; }
+  .marca .icone { width: 150px; height: 150px; border-radius: 38px; background: var(--neon); display: grid; place-items: center; box-shadow: 0 0 80px rgba(57,255,136,.5); }
+  .chamada { position: absolute; left: 70px; right: 70px; text-align: center; }
+  .chamada h2 { font-size: 80px; line-height: 1.1; letter-spacing: -2px; font-weight: 850; }
+  .preco { font-size: 150px; font-weight: 900; color: var(--neon); text-shadow: 0 0 60px rgba(57,255,136,.45); letter-spacing: -4px; }
+  .itens-final { display: grid; gap: 22px; font-size: 44px; color: var(--texto); justify-content: center; text-align: left; }
+  .itens-final span::before { content: "✓  "; color: var(--neon); font-weight: 900; }
+  .botao-final { display: inline-block; background: linear-gradient(135deg, var(--neon), var(--neon2)); color: #03140a; font-weight: 900; font-size: 52px;
+    padding: 34px 70px; border-radius: 30px; box-shadow: 0 30px 80px rgba(34,197,94,.45); text-transform: uppercase; }
+  .rodape { position: absolute; left: 0; right: 0; bottom: 70px; text-align: center; font-size: 28px; color: var(--texto2); }
+</style>
+</head>
+<body>
+<div id="palco">
+  <div class="brilho" id="b1" style="background:#39ff88"></div>
+  <div class="brilho" id="b2" style="background:#22d3ee"></div>
+
+  <!-- CENA 1: TV antiga ganha vida -->
+  <div class="cena" id="c1">
+    <div class="legenda" id="c1-l1"><h2>Sua TV<br>não é <span style="color:var(--perigo)">Smart</span>?</h2></div>
+    <div class="legenda" id="c1-l2"><h2>Transforme em uma<br><span class="neon">TV multimídia</span></h2>
+      <p>Clipes e músicas favoritas, direto do pendrive</p></div>
+    <div class="tv" id="c1-tv" style="top:760px">
+      <div class="tv-tela">
+        <div class="chiado" id="c1-chiado"><div class="canal">CH 03</div></div>
+        <div class="tela-usb" id="c1-usb">
+          <div class="tela-topo"><span>USB · VIDEOS_TV</span><span>SEM INTERNET ✓</span></div>
+          <div class="tocando"><div class="play"></div><div><b>Meu clipe favorito</b><span>Tocando do pendrive</span></div>
+            <div class="eq" id="c1-eq"><i></i><i></i><i></i><i></i></div></div>
+          <div class="progresso-tv"><span id="c1-prog"></span></div>
+        </div>
+      </div>
+      <div class="tv-pe"></div><div class="tv-base"></div>
+    </div>
+  </div>
+
+  <!-- CENA 2: cole o link -->
+  <div class="cena" id="c2">
+    <div class="legenda"><span class="passo-num">PASSO 1</span><h2>Cole o link do<br><span class="neon">clipe ou música</span></h2>
+      <p>No computador, abra o PendrivePlay</p></div>
+    <div class="notebook" id="c2-nb" style="top:760px">
+      <div class="moldura">
+        <img src="01_tela_inicial.png" alt="">
+        <img src="02_links_colados.png" alt="" class="img-sobre" id="c2-links">
+      </div>
+      <div class="teclado"></div>
+    </div>
+    <div class="tecla" id="c2-tecla" style="left:330px; top:1600px">Ctrl + V</div>
+  </div>
+
+  <!-- CENA 3: clique em baixar -->
+  <div class="cena" id="c3">
+    <div class="legenda"><span class="passo-num">PASSO 2</span><h2>Clique em <span class="neon">Baixar</span></h2>
+      <p>Ele baixa e converte no formato que a sua TV lê</p></div>
+    <div class="notebook" id="c3-nb" style="top:760px">
+      <div class="moldura" id="c3-moldura">
+        <img src="02_links_colados.png" alt="">
+        <img src="03_baixando.png" alt="" class="img-sobre" id="c3-baixando">
+        <img src="04_pronto.png" alt="" class="img-sobre" id="c3-pronto">
+        <div class="clique" id="c3-clique"></div>
+        <svg class="cursor" id="c3-cursor" viewBox="0 0 24 24"><path d="M4 2l16 11-7 1.5 4 7.5-3 1.5-4-7.5L4 21z" fill="#fff" stroke="#000" stroke-width="1.4"/></svg>
+      </div>
+      <div class="teclado"></div>
+    </div>
+  </div>
+
+  <!-- CENA 4: pendrive -->
+  <div class="cena" id="c4">
+    <div class="legenda"><span class="passo-num">PASSO 3</span><h2>Tudo salvo no<br><span class="neon">pendrive</span></h2>
+      <p>Organizado em pastas, com nomes que a TV lê</p></div>
+    <div class="pendrive" id="c4-pd" style="top:640px">
+      <div class="pd-conector"></div>
+      <div class="pd-corpo"><svg viewBox="0 0 100 100"><path d="M36 28 L72 50 L36 72 Z" fill="#03140a"/></svg></div>
+    </div>
+    <div class="pastas" id="c4-pastas" style="top:1260px">
+      <div class="pasta"><h3>VIDEOS_TV</h3>
+        <div class="arquivo" id="a1">Meu clipe favorito.mp4</div>
+        <div class="arquivo" id="a2">Show ao vivo.mp4</div></div>
+      <div class="pasta"><h3>MP3</h3>
+        <div class="arquivo musica" id="a3">Musica do momento.mp3</div></div>
+    </div>
+  </div>
+
+  <!-- CENA 5: TV tocando -->
+  <div class="cena" id="c5">
+    <div class="legenda"><span class="passo-num">PASSO 4</span><h2>Plugue na TV<br>e <span class="neon">assista</span></h2>
+      <p>Sem internet, sem travar, sem mensalidade</p></div>
+    <div class="tv" style="top:780px">
+      <div class="tv-tela">
+        <div class="tela-usb">
+          <div class="tela-topo"><span>USB · VIDEOS_TV</span><span>SEM INTERNET ✓</span></div>
+          <div class="tocando"><div class="play"></div><div><b>Show ao vivo</b><span>Tocando do pendrive</span></div>
+            <div class="eq" id="c5-eq"><i></i><i></i><i></i><i></i></div></div>
+          <div class="progresso-tv"><span id="c5-prog"></span></div>
+          <div class="lista-tv"><div>Meu clipe favorito.mp4</div><div>Musica do momento.mp3</div></div>
+        </div>
+      </div>
+      <div class="tv-pe"></div><div class="tv-base"></div>
+    </div>
+    <div class="selo" id="c5-selo" style="left:560px; top:1560px">Sem internet ✓</div>
+    <div class="selo" id="c5-pd" style="left:60px; top:1560px">USB ✓</div>
+  </div>
+
+  <!-- CENA 6: chamada final -->
+  <div class="cena" id="c6">
+    <div class="chamada" style="top:260px">
+      <div class="marca" id="c6-marca"><div class="icone"><svg width="100" height="100" viewBox="0 0 100 100"><rect x="38" y="6" width="24" height="18" rx="2" fill="none" stroke="#03140a" stroke-width="7"/><rect x="28" y="24" width="44" height="68" rx="10" fill="#03140a"/><path d="M44 44 L62 58 L44 72 Z" fill="#39ff88"/></svg></div><div>Pendrive<span class="neon">Play</span></div></div>
+    </div>
+    <div class="chamada" style="top:560px" id="c6-titulo"><h2>Sua TV antiga,<br>agora <span class="neon">multimídia</span></h2></div>
+    <div class="chamada" style="top:860px" id="c6-preco"><div class="preco">R$ 19,90</div></div>
+    <div class="chamada" style="top:1100px" id="c6-itens"><div class="itens-final"><span>Pagamento único</span><span>Garantia de 7 dias</span><span>Para Windows 10 e 11</span></div></div>
+    <div class="chamada" style="top:1500px" id="c6-botao"><div class="botao-final">Link na bio</div></div>
+    <div class="rodape">Requer TV ou aparelho com entrada USB</div>
+  </div>
+</div>
+
+<script>
+  var DURACAO = 33;
+  var $ = function (id) { return document.getElementById(id); };
+  function lim(x) { return Math.max(0, Math.min(1, x)); }
+  function suave(x) { x = lim(x); return x * x * (3 - 2 * x); }
+  function saida(x) { x = lim(x); return 1 - Math.pow(1 - x, 3); }       // desacelera
+  function mola(x) { x = lim(x); return 1 + 2.2 * Math.pow(x - 1, 3) + 1.2 * Math.pow(x - 1, 2); } // passa um pouco e volta
+  function janela(t, ini, fim, f) { return suave((t - ini) / f) * (1 - suave((t - (fim - f)) / f)); } // aparece e some
+  function entra(el, p, dy) { el.style.opacity = p; el.style.transform = "translateY(" + ((1 - saida(p)) * (dy || 60)) + "px)"; }
+
+  var cenas = [["c1", 0, 5.2], ["c2", 5, 11.2], ["c3", 11, 17.2], ["c4", 17, 22.2], ["c5", 22, 28.2], ["c6", 28, 33.5]];
+
+  function eq(prefixo, t) {
+    document.querySelectorAll("#" + prefixo + " i").forEach(function (i, k) {
+      i.style.height = (25 + 75 * Math.abs(Math.sin(t * (5 + k * 1.7) + k))) + "%";
+    });
+  }
+
+  function render(t) {
+    // fundo vivo
+    $("b1").style.transform = "translate(" + (-250 + Math.sin(t * .4) * 120) + "px," + (-200 + Math.cos(t * .3) * 140) + "px)";
+    $("b2").style.transform = "translate(" + (450 + Math.cos(t * .35) * 120) + "px," + (1250 + Math.sin(t * .45) * 140) + "px)";
+
+    cenas.forEach(function (c) {
+      var p = janela(t, c[1], c[2], 0.45);
+      if (c[0] === "c6") p = suave((t - c[1]) / 0.45);
+      $(c[0]).style.opacity = p;
+      $(c[0]).style.visibility = p > 0.001 ? "visible" : "hidden";
+    });
+
+    // CENA 1
+    entra($("c1-l1"), janela(t, 0.1, 2.7, 0.35));
+    entra($("c1-l2"), suave((t - 2.6) / 0.45));
+    var liga = suave((t - 2.4) / 0.5);
+    $("c1-chiado").style.opacity = 1 - liga;
+    $("c1-chiado").style.backgroundPosition = "0 " + (t * 900 % 60) + "px";
+    $("c1-usb").style.opacity = liga;
+    $("c1-tv").style.transform = "scale(" + (0.92 + 0.08 * saida((t - 0.1) / 0.8)) + ")";
+    eq("c1-eq", t); $("c1-prog").style.width = (lim((t - 2.6) / 2.6) * 38) + "%";
+
+    // CENA 2
+    var t2 = t - 5;
+    $("c2-nb").style.transform = "translateY(" + ((1 - saida(t2 / 0.8)) * 140) + "px)";
+    var tecla = janela(t2, 1.6, 3.4, 0.25);
+    $("c2-tecla").style.opacity = tecla;
+    $("c2-tecla").style.transform = "scale(" + (t2 > 2.3 && t2 < 2.6 ? 0.9 : 1) + ")";
+    $("c2-links").style.opacity = suave((t2 - 2.5) / 0.3);
+
+    // CENA 3 (imagem do programa: 720 px de largura mostrada em 844 px)
+    var t3 = t - 11, esc = 844 / 720;
+    var alvoX = 155 * esc, alvoY = 404 * esc;              // botão Baixar
+    var anda = saida((t3 - 0.4) / 1.2);
+    $("c3-cursor").style.left = (620 + (alvoX - 620) * anda) + "px";
+    $("c3-cursor").style.top = (720 + (alvoY - 720) * anda) + "px";
+    var cl = lim((t3 - 1.7) / 0.6);
+    $("c3-clique").style.left = (alvoX - 70) + "px"; $("c3-clique").style.top = (alvoY - 70) + "px";
+    $("c3-clique").style.opacity = cl > 0 && cl < 1 ? 1 - cl : 0;
+    $("c3-clique").style.transform = "scale(" + (0.4 + cl) + ")";
+    $("c3-baixando").style.opacity = suave((t3 - 1.9) / 0.3);
+    $("c3-pronto").style.opacity = suave((t3 - 4.4) / 0.4);
+    $("c3-cursor").style.opacity = 1 - suave((t3 - 3.6) / 0.3);
+
+    // CENA 4
+    var t4 = t - 17;
+    $("c4-pd").style.transform = "translateY(" + ((1 - mola(t4 / 0.9)) * -260) + "px) rotate(" + (Math.sin(t * 2) * 2) + "deg)";
+    entra($("c4-pastas"), suave((t4 - 0.6) / 0.5), 80);
+    [["a1", 1.2], ["a2", 1.8], ["a3", 2.4]].forEach(function (a) { entra($(a[0]), suave((t4 - a[1]) / 0.35), 30); });
+
+    // CENA 5
+    var t5 = t - 22;
+    eq("c5-eq", t); $("c5-prog").style.width = (12 + lim(t5 / 6) * 50) + "%";
+    entra($("c5-selo"), suave((t5 - 1.0) / 0.4), 50);
+    entra($("c5-pd"), suave((t5 - 0.6) / 0.4), 50);
+
+    // CENA 6
+    var t6 = t - 28;
+    $("c6-marca").style.transform = "scale(" + (0.6 + 0.4 * mola(t6 / 0.7)) + ")";
+    $("c6-marca").style.opacity = suave(t6 / 0.3);
+    entra($("c6-titulo"), suave((t6 - 0.5) / 0.4));
+    $("c6-preco").style.opacity = suave((t6 - 1.0) / 0.3);
+    $("c6-preco").style.transform = "scale(" + (0.5 + 0.5 * mola((t6 - 1.0) / 0.6)) + ")";
+    entra($("c6-itens"), suave((t6 - 1.6) / 0.4));
+    entra($("c6-botao"), suave((t6 - 2.2) / 0.4));
+    $("c6-botao").style.transform += " scale(" + (1 + 0.04 * Math.sin(Math.max(0, t6 - 2.6) * 6)) + ")";
+  }
+  window.render = render;
+  window.DURACAO = DURACAO;
+
+  // Abrindo no navegador: toca em tempo real (o gerador de vídeo desliga isto)
+  if (!window.MODO_GRAVACAO) {
+    var inicio = performance.now();
+    (function quadro() {
+      var t = ((performance.now() - inicio) / 1000) % DURACAO;
+      render(t); requestAnimationFrame(quadro);
+    })();
+  }
+</script>
+</body>
+</html>
