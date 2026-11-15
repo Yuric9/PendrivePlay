@@ -37,7 +37,7 @@
   <h1>PendrivePlay</h1>
   <div class="sub">Guia de instalação e uso</div>
   <img src="imagens/02_links_colados.png" alt="Janela do PendrivePlay">
-  <div class="versao">Versão 1.0.0 · Windows 10 e 11 (64 bits)</div>
+  <div class="versao">Versão 1.1.0 · Windows 10 e 11 (64 bits)</div>
 </div>
 
 <h2 class="quebra">1. O que é o PendrivePlay</h2>
@@ -69,7 +69,7 @@ direto no pendrive, já no formato que TVs antigas, Smart TVs e TV Box conseguem
 <ol>
   <li>Na sua biblioteca do Gumroad, baixe o arquivo <code>.zip</code> do PendrivePlay.</li>
   <li>Clique com o botão direito no <code>.zip</code> e escolha <b>Extrair tudo</b>.</li>
-  <li>Dê dois cliques em <code>PendrivePlay_Instalador_1.0.0.exe</code>.</li>
+  <li>Dê dois cliques em <code>PendrivePlay_Instalador_1.1.0.exe</code>.</li>
   <li>Se aparecer a tela azul <b>"O Windows protegeu o computador"</b>, clique em
       <b>Mais informações</b> e depois em <b>Executar assim mesmo</b>.
       <br><span class="legenda">Isso acontece porque o instalador não tem assinatura digital paga.
@@ -97,6 +97,21 @@ para trazer links de um arquivo de texto.</p>
 <p>Escolha <b>Vídeo MP4 para TV</b> ou <b>Música MP3</b> e clique em <b>Baixar</b>.</p>
 <div class="print"><img src="imagens/02_links_colados.png" alt="Links colados"></div>
 <div class="legenda">Três links colados, prontos para baixar.</div>
+
+<h3>Links de playlist</h3>
+<p>Quando você abre um vídeo dentro de uma playlist no YouTube, o link ganha um
+<code>&amp;list=...</code> no final. Ao clicar em Baixar, o programa percebe isso e pergunta:</p>
+<div class="caixa">
+  Este link é de um vídeo aberto dentro de uma playlist.<br>O que você quer baixar?<br><br>
+  <b>[ Só este vídeo ]</b> &nbsp; <b>[ A playlist inteira ]</b> &nbsp; <b>[ Cancelar ]</b>
+</div>
+<ul>
+  <li><b>Só este vídeo:</b> baixa apenas o vídeo que estava aberto.</li>
+  <li><b>A playlist inteira:</b> baixa todos os vídeos da playlist, um de cada vez. Cada um vai
+      para o pendrive assim que termina, e o quadro mostra a contagem, como <code>[5/63]</code>.</li>
+  <li>O link da própria playlist (<code>youtube.com/playlist?list=...</code>) baixa todos os
+      vídeos sem perguntar.</li>
+</ul>
 
 <h3 class="quebra">Passo 3: acompanhe</h3>
 <p>Os links são baixados um de cada vez. A barra mostra o progresso total e o quadro de
@@ -129,7 +144,9 @@ baixo mostra cada etapa.</p>
 <div class="pasta">E:\
 ├── VIDEOS_TV\     vídeos MP4
 └── MP3\           músicas</div>
-<p>O formato usado (HD 720p, H.264 Baseline) é o mais aceito por TVs, inclusive modelos antigos.</p>
+<p>O formato usado (HD 720p, H.264 Baseline, até 30 quadros por segundo) é o mais aceito por
+TVs, inclusive modelos antigos. Os nomes dos arquivos ficam curtos, sem acentos e sem
+símbolos, porque muitas TVs não abrem arquivos com nomes longos ou caracteres especiais.</p>
 
 <h2>6. Problemas comuns</h2>
 <table>
@@ -138,9 +155,15 @@ baixo mostra cada etapa.</p>
   <tr><td>Um link dá erro</td><td>Confira se o vídeo abre no navegador. Vídeos privados, removidos ou com restrição de idade não podem ser baixados. O motivo aparece no quadro de mensagens.</td></tr>
   <tr><td>Nada baixa, nenhum link funciona</td><td>Os sites mudam com frequência e o programa precisa de atualização. Veja se há uma versão nova na sua biblioteca do Gumroad.</td></tr>
   <tr><td>O antivírus bloqueou o programa</td><td>Programas feitos em Python e sem assinatura paga às vezes são marcados por engano. O código é aberto em github.com/Yuric9/PendrivePlay. Se confiar, libere o programa no antivírus.</td></tr>
+  <tr><td>A TV diz "arquivo não reconhecido"</td><td>Arquivos baixados pela versão 1.0.0 podem ter nomes longos ou com símbolos. Renomeie o arquivo para um nome simples (por exemplo <code>video1.mp4</code>) ou baixe de novo com a versão atual.</td></tr>
+  <tr><td>Baixou a playlist inteira sem querer</td><td>Na pergunta da playlist, escolha <b>Só este vídeo</b>. Se já estiver baixando, clique em <b>Cancelar</b>: o que já terminou fica no pendrive.</td></tr>
   <tr><td>A TV não mostra os vídeos</td><td>Confira se os arquivos estão na pasta <code>VIDEOS_TV</code>. Algumas TVs só leem pendrives em FAT32.</td></tr>
   <tr><td>A pausa não para na hora</td><td>Durante a conversão, a pausa espera o arquivo atual terminar. Isso é normal.</td></tr>
 </table>
+
+<h3>Ajuda dentro do programa</h3>
+<p>O botão <b>Como usar</b>, no canto de cima, mostra um resumo deste guia. E, ao parar o
+mouse em cima de qualquer botão, aparece uma explicação curta do que ele faz.</p>
 
 <h3>Autoteste</h3>
 <p>Para conferir se a instalação está completa, abra o <b>Prompt de Comando</b> e rode:</p>

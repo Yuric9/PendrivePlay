@@ -2,7 +2,7 @@
 ; Ele é rodado pelo CRIAR_INSTALADOR.bat (ou pelo GitHub Actions).
 
 #define AppNome "PendrivePlay"
-#define AppVersao "1.0.0"
+#define AppVersao "1.1.0"
 #define AppExe "PendrivePlay.exe"
 
 [Setup]

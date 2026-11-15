@@ -28,15 +28,19 @@ programa baixa, converte e salva tudo organizado no pendrive:
 
 - Detecta o pendrive sozinho, assim que você conecta
 - Baixa vários links de uma vez (ou uma lista em arquivo `.txt`) e também playlists
+- Se o link for de um vídeo dentro de uma playlist, pergunta se você quer só o vídeo ou a
+  playlist inteira; cada vídeo vai para o pendrive assim que fica pronto
+- Salva com nomes curtos e sem símbolos, que as TVs conseguem abrir
 - Botões de **Pausar**, **Continuar** e **Cancelar**
 - Se um link der erro, continua com os outros e mostra o motivo
 - Não sobrescreve arquivos que já estão no pendrive
 - Instalador simples: não pede senha de administrador e não precisa de Python nem de
   outros programas
+- Botão "Como usar" e dicas ao passar o mouse em cada botão
 
 **O que vem no pacote**
 
-- Instalador para Windows (`PendrivePlay_Instalador_1.0.0.exe`)
+- Instalador para Windows (`PendrivePlay_Instalador_1.1.0.exe`)
 - Guia de instalação e uso em PDF, com imagens
 - Licenças e aviso de uso
 
