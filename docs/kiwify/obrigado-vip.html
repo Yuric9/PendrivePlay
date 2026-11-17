@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Compra confirmada · PendrivePlay Completo</title>
+<meta name="robots" content="noindex">
+<style>
+  :root { --fundo:#05070a; --cartao:#0f161d; --borda:#1f2b36; --texto:#eef6f1; --texto-2:#9fb0a8; --neon:#39ff88; --neon-2:#22c55e; --zap:#25d366; }
+  * { box-sizing: border-box; }
+  body { margin:0; background:var(--fundo); color:var(--texto); font-family:"Segoe UI",system-ui,-apple-system,Roboto,Arial,sans-serif; line-height:1.6; }
+  main { width:min(640px,100% - 32px); margin:0 auto; padding:48px 0 60px; text-align:center; }
+  .ok { width:84px; height:84px; margin:0 auto 14px; border-radius:50%; display:grid; place-items:center; background:rgba(57,255,136,.12); border:2px solid var(--neon); font-size:42px; color:var(--neon); }
+  h1 { font-size:clamp(28px,5vw,40px); line-height:1.1; margin:0 0 10px; }
+  p { color:var(--texto-2); margin:0 0 14px; }
+  .passo { background:var(--cartao); border:1px solid var(--borda); border-radius:18px; padding:24px; margin:22px 0; text-align:left; }
+  .passo h2 { font-size:20px; margin:0 0 6px; }
+  .passo h2 span { display:inline-grid; place-items:center; width:30px; height:30px; border-radius:9px; background:var(--neon); color:#03140a; font-weight:900; margin-right:8px; font-size:16px; }
+  .btn { display:flex; align-items:center; justify-content:center; gap:10px; width:100%; text-decoration:none; font-weight:900; text-transform:uppercase; padding:16px 20px; border-radius:14px; font-size:17px; margin-top:12px; }
+  .baixar { background:linear-gradient(135deg,var(--neon),var(--neon-2)); color:#03140a; }
+  .zap { background:var(--zap); color:#04210f; }
+  .dica { font-size:14px; }
+</style>
+</head>
+<body>
+<main>
+  <div class="ok" aria-hidden="true">✓</div>
+  <h1>Compra confirmada! Bem-vindo ao PendrivePlay Completo</h1>
+  <p>Você também recebe estes links no seu e-mail. Guarde esta página.</p>
+
+  <div class="passo">
+    <h2><span>1</span>Baixe o programa</h2>
+    <p>Na página de download, clique em <b>PendrivePlay_Instalador_1.1.0.exe</b> para baixar o instalador. O guia em PDF está na mesma página.</p>
+    <a class="btn baixar" href="https://github.com/Yuric9/PendrivePlay/releases/tag/v1.1.0" target="_blank" rel="noopener">Ir para o download</a>
+  </div>
+
+  <div class="passo">
+    <h2><span>2</span>Ative seu Suporte VIP no WhatsApp</h2>
+    <p>Clique no botão e envie a mensagem com o <b>e-mail que você usou na compra</b>. A gente confirma seu pedido e te ajuda a instalar e a tocar na sua TV.</p>
+    <a class="btn zap" id="zap" href="#" target="_blank" rel="noopener">Ativar meu Suporte VIP</a>
+    <p class="dica" style="margin-top:12px">Atendimento por ordem de chegada. Se for fora do horário, deixe sua mensagem que respondemos assim que possível.</p>
+  </div>
+</main>
+<script>
+  var msg = "Olá! Comprei o PendrivePlay Completo com Suporte VIP e quero ativar meu suporte. Meu e-mail da compra é: ";
+  document.getElementById("zap").href = "https://wa.me/5562981007636?text=" + encodeURIComponent(msg);
+</script>
+</body>
+</html>

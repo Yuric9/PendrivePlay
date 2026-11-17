@@ -4,617 +4,443 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>PendrivePlay: transforme sua TV antiga em TV multimídia</title>
-<meta name="description" content="Assista seus clipes e ouça suas músicas favoritas na TV antiga, direto do pendrive e sem internet. R$ 19,90, garantia de 7 dias.">
+<meta name="description" content="Clipes e músicas favoritas na TV antiga, direto do pendrive e sem internet. A partir de R$ 19,90, garantia de 7 dias.">
 <meta property="og:title" content="PendrivePlay: sua TV antiga virou TV multimídia">
-<meta property="og:description" content="Clipes e músicas favoritas na TV, direto do pendrive, sem precisar de internet. Garantia de 7 dias.">
+<meta property="og:description" content="Clipes e músicas na TV, direto do pendrive, sem internet. Veja funcionando numa barbearia de verdade.">
 <meta property="og:image" content="https://pendriveplay.vercel.app/midia/funcionando.jpg">
 <meta property="og:url" content="https://pendriveplay.vercel.app/">
 <meta name="theme-color" content="#05070a">
 <script>
   /* =====================================================================
-     CONFIGURAÇÃO: cole aqui o link do checkout do produto na Kiwify
-     (na Kiwify: Produtos → PendrivePlay → Links → link do checkout).
-     Exemplo: "https://pay.kiwify.com.br/AbC123x"
+     CONFIGURAÇÃO: links do checkout na Kiwify e WhatsApp do suporte
      ===================================================================== */
-  var CHECKOUT_URL = "https://pay.kiwify.com.br/p71Zj89";
-  var PRECO = "R$ 19,90";
+  var CHECKOUT_BASICO   = "https://pay.kiwify.com.br/p71Zj89";   // R$ 19,90
+  var CHECKOUT_COMPLETO = "https://pay.kiwify.com.br/zUqlF9u";   // R$ 29,90 com Suporte VIP
+  var WHATSAPP = "5562981007636";
 </script>
 <style>
   :root {
-    --fundo: #05070a;
-    --fundo-2: #0b1015;
-    --cartao: #0f161d;
-    --cartao-2: #141d26;
-    --borda: #1f2b36;
-    --texto: #eef6f1;
-    --texto-2: #9fb0a8;
-    --neon: #39ff88;
-    --neon-2: #22c55e;
-    --neon-fundo: rgba(57, 255, 136, .1);
-    --ciano: #22d3ee;
-    --perigo: #ff5d6c;
-    --amarelo: #fde047;
-    --raio: 18px;
+    --fundo: #05070a; --fundo-2: #0b1015; --cartao: #0f161d; --cartao-2: #141d26; --borda: #1f2b36;
+    --texto: #eef6f1; --texto-2: #9fb0a8; --neon: #39ff88; --neon-2: #22c55e; --neon-fundo: rgba(57,255,136,.1);
+    --ciano: #22d3ee; --perigo: #ff5d6c; --amarelo: #fde047; --zap: #25d366; --raio: 18px;
   }
   * { box-sizing: border-box; }
   html { scroll-behavior: smooth; }
-  body {
-    margin: 0; background: var(--fundo); color: var(--texto);
-    font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
-    font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden;
-  }
+  body { margin: 0; background: var(--fundo); color: var(--texto); font-family: "Segoe UI", system-ui, -apple-system, Roboto, "Helvetica Neue", Arial, sans-serif;
+         font-size: 17px; line-height: 1.6; -webkit-font-smoothing: antialiased; overflow-x: hidden; }
   img { max-width: 100%; height: auto; display: block; }
   a { color: var(--neon); }
-  .container { width: min(1140px, 100% - 32px); margin-inline: auto; }
+  .container { width: min(1100px, 100% - 32px); margin-inline: auto; }
+  .estreito { width: min(760px, 100% - 32px); margin-inline: auto; }
   :focus-visible { outline: 3px solid var(--neon); outline-offset: 3px; border-radius: 8px; }
-  .pular { position: absolute; left: -999px; }
-  .pular:focus { left: 12px; top: 12px; z-index: 50; background: var(--cartao); padding: 8px 12px; border-radius: 8px; }
+  section { padding: 70px 0; position: relative; }
+  .alt { background: var(--fundo-2); border-block: 1px solid var(--borda); }
+  .neon { color: var(--neon); text-shadow: 0 0 24px rgba(57,255,136,.45); }
 
-  /* ---------- botão principal ---------- */
-  .cta {
-    position: relative; display: inline-flex; align-items: center; justify-content: center; gap: 10px;
-    background: linear-gradient(135deg, var(--neon), var(--neon-2)); color: #03140a;
-    font-weight: 800; font-size: 19px; letter-spacing: .2px; text-decoration: none; text-transform: uppercase;
-    padding: 18px 34px; border-radius: 14px; border: 0; cursor: pointer;
-    box-shadow: 0 0 0 0 rgba(57, 255, 136, .55), 0 14px 40px rgba(34, 197, 94, .35);
-    animation: pulso 2.4s infinite; transition: transform .15s, filter .15s;
-  }
-  .cta:hover { transform: translateY(-2px) scale(1.02); filter: brightness(1.06); }
-  .cta small { display: block; font-size: 12px; font-weight: 700; opacity: .75; text-transform: none; }
-  @keyframes pulso {
-    0% { box-shadow: 0 0 0 0 rgba(57, 255, 136, .5), 0 14px 40px rgba(34, 197, 94, .35); }
-    70% { box-shadow: 0 0 0 16px rgba(57, 255, 136, 0), 0 14px 40px rgba(34, 197, 94, .35); }
-    100% { box-shadow: 0 0 0 0 rgba(57, 255, 136, 0), 0 14px 40px rgba(34, 197, 94, .35); }
-  }
-  .selos { display: flex; flex-wrap: wrap; gap: 8px 18px; margin-top: 18px; font-size: 14px; color: var(--texto-2); }
-  .selos span { display: inline-flex; align-items: center; gap: 6px; }
-  .selos svg { width: 18px; height: 18px; color: var(--neon); flex: none; }
+  /* botão */
+  .cta { display: inline-flex; flex-direction: column; align-items: center; justify-content: center; gap: 2px;
+         background: linear-gradient(135deg, var(--neon), var(--neon-2)); color: #03140a; font-weight: 900; font-size: 20px;
+         text-decoration: none; text-transform: uppercase; letter-spacing: .3px; padding: 18px 36px; border-radius: 14px; border: 0; cursor: pointer;
+         box-shadow: 0 14px 40px rgba(34,197,94,.35); animation: pulso 2.4s infinite; transition: transform .15s; text-align: center; }
+  .cta:hover { transform: translateY(-2px) scale(1.02); }
+  .cta small { font-size: 12px; font-weight: 700; opacity: .75; text-transform: none; letter-spacing: 0; }
+  .cta.cheio { width: 100%; }
+  .cta.secundario { background: transparent; color: var(--neon); box-shadow: inset 0 0 0 2px var(--neon); animation: none; }
+  @keyframes pulso { 0% { box-shadow: 0 0 0 0 rgba(57,255,136,.5), 0 14px 40px rgba(34,197,94,.35); }
+                     70% { box-shadow: 0 0 0 16px rgba(57,255,136,0), 0 14px 40px rgba(34,197,94,.35); }
+                     100% { box-shadow: 0 0 0 0 rgba(57,255,136,0), 0 14px 40px rgba(34,197,94,.35); } }
+  .selos { display: flex; flex-wrap: wrap; justify-content: center; gap: 8px 18px; margin-top: 16px; font-size: 13.5px; color: var(--texto-2); }
+  .selos span::before { content: "✓ "; color: var(--neon); font-weight: 900; }
 
-  /* ---------- faixa do topo ---------- */
-  .faixa-topo {
-    background: linear-gradient(90deg, #0c2a19, #0a1f2a); color: var(--texto); text-align: center;
-    font-size: 14px; font-weight: 600; padding: 9px 12px; border-bottom: 1px solid var(--borda);
-  }
+  .faixa-topo { background: linear-gradient(90deg, #0c2a19, #0a1f2a); text-align: center; font-size: 14px; font-weight: 600; padding: 9px 12px; border-bottom: 1px solid var(--borda); }
   .faixa-topo strong { color: var(--neon); }
 
-  /* ---------- hero ---------- */
-  .hero { position: relative; padding: 70px 0 60px; overflow: hidden; }
-  .hero::before {
-    content: ""; position: absolute; inset: -40% -10% auto; height: 120%;
-    background:
-      radial-gradient(600px 400px at 18% 30%, rgba(57, 255, 136, .16), transparent 70%),
-      radial-gradient(500px 380px at 85% 20%, rgba(34, 211, 238, .14), transparent 70%);
-    pointer-events: none; animation: flutuar 12s ease-in-out infinite alternate;
-  }
-  @keyframes flutuar { to { transform: translate3d(0, 40px, 0) scale(1.05); } }
-  .hero .container { position: relative; display: grid; grid-template-columns: minmax(0, 1.05fr) minmax(0, 1fr); gap: 50px; align-items: center; }
-  .etiqueta {
-    display: inline-flex; align-items: center; gap: 8px; border: 1px solid rgba(57, 255, 136, .35);
-    background: var(--neon-fundo); color: var(--neon); font-size: 14px; font-weight: 700;
-    padding: 6px 14px; border-radius: 999px;
-  }
-  .etiqueta .ponto { width: 8px; height: 8px; border-radius: 50%; background: var(--neon); box-shadow: 0 0 10px var(--neon); }
-  h1 { font-size: clamp(36px, 5.4vw, 62px); line-height: 1.04; letter-spacing: -1.5px; margin: 18px 0; font-weight: 850; }
-  .neon { color: var(--neon); text-shadow: 0 0 24px rgba(57, 255, 136, .45); }
-  .riscado { position: relative; color: var(--perigo); }
-  .sub { font-size: 20px; color: var(--texto-2); margin: 0 0 30px; max-width: 34ch; }
-  .sub strong { color: var(--texto); }
+  /* topo com vídeo */
+  .hero { padding: 44px 0 60px; text-align: center; overflow: hidden; }
+  .hero::before { content: ""; position: absolute; inset: -30% -10% auto; height: 110%; pointer-events: none;
+                  background: radial-gradient(600px 400px at 20% 30%, rgba(57,255,136,.15), transparent 70%), radial-gradient(500px 380px at 82% 20%, rgba(34,211,238,.13), transparent 70%); }
+  .hero .container { position: relative; }
+  .chapeu { display: inline-block; color: var(--neon); font-weight: 800; letter-spacing: 1.4px; text-transform: uppercase; font-size: 13px; }
+  .hero h1 { font-size: clamp(32px, 5.2vw, 56px); line-height: 1.06; letter-spacing: -1.2px; margin: 10px auto 12px; max-width: 18ch; font-weight: 850; }
+  .hero .sub { color: var(--texto-2); font-size: 19px; margin: 0 auto 26px; max-width: 46ch; }
+  .hero .sub strong { color: var(--texto); }
+  .video-real { position: relative; width: min(340px, 100%); margin: 0 auto 26px; border-radius: 22px; overflow: hidden; background: #000;
+                box-shadow: 0 0 0 2px var(--neon-2), 0 0 70px rgba(57,255,136,.28); }
+  .video-real video { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; }
+  .video-real .som { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); border: 0; border-radius: 999px; white-space: nowrap;
+                     background: var(--neon); color: #05070a; font-weight: 800; font-size: 15px; padding: 10px 18px; cursor: pointer; box-shadow: 0 6px 20px rgba(0,0,0,.5); }
+  .video-real .som[hidden] { display: none; }
+  .preco-topo { margin: 0 0 18px; }
+  .preco-topo .leve { color: var(--texto-2); font-size: 16px; }
+  .preco-topo .valor { font-size: clamp(54px, 9vw, 76px); font-weight: 900; line-height: 1; letter-spacing: -2px; color: var(--neon); text-shadow: 0 0 34px rgba(57,255,136,.4); }
+  .preco-topo .valor small { font-size: .4em; letter-spacing: 0; color: var(--texto); vertical-align: .9em; margin-right: 4px; }
+  .preco-topo .obs { color: var(--texto-2); font-size: 14px; }
 
-  /* TV desenhada em CSS */
-  .tv { position: relative; width: 100%; max-width: 560px; margin-left: auto; }
-  .tv-tela {
-    position: relative; border: 14px solid #1b232c; border-radius: 22px; background: #000; overflow: hidden;
-    box-shadow: 0 0 0 2px #2a3540, 0 30px 80px rgba(0, 0, 0, .6), 0 0 90px rgba(57, 255, 136, .18);
-  }
-  .tv-tela img { width: 100%; }
-  .tv-tela::after {
-    content: ""; position: absolute; inset: 0; pointer-events: none;
-    background: repeating-linear-gradient(0deg, rgba(255, 255, 255, .025) 0 1px, transparent 1px 3px);
-  }
-  .tv-pe { width: 38%; height: 14px; margin: 0 auto; background: #1b232c; border-radius: 0 0 14px 14px; }
-  .tv-base { width: 56%; height: 10px; margin: 6px auto 0; background: #121920; border-radius: 10px; }
-  .tela-usb { aspect-ratio: 4 / 3; background: radial-gradient(circle at 30% 20%, #0f2f22, #020604 70%); padding: 6% 7%; display: flex; flex-direction: column; gap: 4%; }
-  .tela-topo { display: flex; justify-content: space-between; color: #a7f3d0; font-size: clamp(11px, 1.3vw, 15px); font-weight: 700; letter-spacing: 1px; }
-  .tocando-agora { flex: 1; border-radius: 12px; background: linear-gradient(135deg, rgba(57,255,136,.22), rgba(34,211,238,.18)); border: 1px solid rgba(57,255,136,.35); display: flex; align-items: center; gap: 5%; padding: 0 6%; }
-  .tocando-agora .play { width: clamp(44px, 6vw, 70px); height: clamp(44px, 6vw, 70px); flex: none; }
-  .tocando-agora b { display: block; font-size: clamp(14px, 1.8vw, 22px); color: #fff; line-height: 1.2; }
-  .tocando-agora span { color: #a7f3d0; font-size: clamp(11px, 1.2vw, 14px); }
-  .eq { display: flex; align-items: flex-end; gap: 4px; height: 34px; margin-left: auto; }
-  .eq i { width: 6px; height: 40%; background: var(--neon); border-radius: 3px; animation: eq 1s ease-in-out infinite; }
-  .eq i:nth-child(2) { animation-delay: .2s; } .eq i:nth-child(3) { animation-delay: .4s; } .eq i:nth-child(4) { animation-delay: .1s; }
-  @keyframes eq { 0%, 100% { height: 20%; } 50% { height: 100%; } }
-  .arquivos { list-style: none; margin: 0; padding: 0; display: grid; gap: 6px; }
-  .arquivos li { display: flex; align-items: center; gap: 10px; background: rgba(255,255,255,.05); border-radius: 8px; padding: 7px 12px; color: #d1fae5; font-size: clamp(11px, 1.25vw, 15px); }
-  .arquivos li::before { content: "▶"; color: var(--neon); font-size: .8em; }
-  .arquivos li.musica::before { content: "♪"; }
-  .usb {
-    position: absolute; left: -26px; bottom: 8px; background: var(--neon); color: #03140a; font-weight: 800;
-    font-size: 13px; padding: 8px 12px; border-radius: 10px; transform: rotate(-6deg);
-    box-shadow: 0 10px 30px rgba(57, 255, 136, .35);
-  }
-
-  /* ---------- seções ---------- */
-  section { padding: 76px 0; position: relative; }
-  .titulo { text-align: center; margin: 0 auto 42px; max-width: 760px; }
-  .titulo .chapeu { color: var(--neon); font-weight: 800; letter-spacing: 1.5px; text-transform: uppercase; font-size: 13px; }
-  .titulo h2 { font-size: clamp(30px, 4vw, 44px); letter-spacing: -.8px; line-height: 1.1; margin: 8px 0 12px; }
+  .titulo { text-align: center; margin: 0 auto 38px; max-width: 760px; }
+  .titulo h2 { font-size: clamp(28px, 4vw, 42px); letter-spacing: -.8px; line-height: 1.12; margin: 8px 0 10px; }
   .titulo p { color: var(--texto-2); margin: 0; font-size: 18px; }
-  .alt { background: var(--fundo-2); border-block: 1px solid var(--borda); }
 
-  /* dores */
-  .dores { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
-  .dor { background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); padding: 26px; }
-  .dor .x { width: 42px; height: 42px; border-radius: 12px; display: grid; place-items: center; background: rgba(255, 93, 108, .12); color: var(--perigo); font-weight: 900; font-size: 20px; margin-bottom: 12px; }
-  .dor h3 { margin: 0 0 6px; font-size: 20px; }
-  .dor p { margin: 0; color: var(--texto-2); }
-
-  /* antes e depois */
-  .antes-depois { display: grid; grid-template-columns: 1fr auto 1fr; gap: 22px; align-items: center; }
-  .quadro { border-radius: var(--raio); padding: 22px; border: 1px solid var(--borda); background: var(--cartao); }
-  .quadro h3 { margin: 0 0 14px; font-size: 15px; letter-spacing: 1.5px; text-transform: uppercase; }
-  .quadro.antes h3 { color: var(--perigo); }
-  .quadro.depois h3 { color: var(--neon); }
-  .mini-tv { aspect-ratio: 16 / 9; border: 10px solid #1b232c; border-radius: 14px; background: #000; display: grid; place-items: center; text-align: center; padding: 14px; position: relative; overflow: hidden; }
-  .erro-tv { background: #0b2a7a; color: #fff; border: 2px solid #8ab4ff; padding: 12px 16px; font-family: Tahoma, Verdana, sans-serif; font-size: 15px; max-width: 90%; }
-  .erro-tv b { display: block; margin-bottom: 4px; }
-  .mini-tv.tocando { background: linear-gradient(135deg, #062a17, #04161f); }
-  .play { width: 64px; height: 64px; border-radius: 50%; background: var(--neon); display: grid; place-items: center; box-shadow: 0 0 40px rgba(57, 255, 136, .6); }
-  .play::after { content: ""; border-left: 22px solid #03140a; border-top: 14px solid transparent; border-bottom: 14px solid transparent; margin-left: 6px; }
-  .barra-tv { position: absolute; left: 14px; right: 14px; bottom: 12px; height: 5px; background: rgba(255, 255, 255, .15); border-radius: 5px; overflow: hidden; }
-  .barra-tv span { display: block; height: 100%; width: 0; background: var(--neon); animation: tocar 6s linear infinite; }
-  @keyframes tocar { to { width: 100%; } }
-  .quadro ul { margin: 14px 0 0; padding-left: 20px; color: var(--texto-2); font-size: 15px; }
-  .seta { font-size: 42px; color: var(--neon); text-shadow: 0 0 20px rgba(57, 255, 136, .5); }
+  /* motivos */
+  .motivos { display: grid; grid-template-columns: repeat(2, 1fr); gap: 18px; }
+  .motivo { display: flex; gap: 16px; background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); padding: 22px; }
+  .motivo .ic { flex: none; width: 46px; height: 46px; border-radius: 12px; display: grid; place-items: center; background: var(--neon-fundo); font-size: 24px; }
+  .motivo h3 { margin: 0 0 4px; font-size: 19px; }
+  .motivo p { margin: 0; color: var(--texto-2); font-size: 16px; }
 
   /* passos */
-  .passos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 22px; }
-  .passo { background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); overflow: hidden; display: flex; flex-direction: column; }
-  .passo .img { background: #000; border-bottom: 1px solid var(--borda); }
-  .passo .img img { width: 100%; aspect-ratio: 720 / 680; object-fit: cover; object-position: top; }
-  .passo .texto { padding: 20px 22px 24px; }
-  .num { display: inline-grid; place-items: center; width: 34px; height: 34px; border-radius: 10px; background: var(--neon); color: #03140a; font-weight: 900; margin-bottom: 10px; }
-  .passo h3 { margin: 0 0 4px; font-size: 20px; }
-  .passo p { margin: 0; color: var(--texto-2); font-size: 16px; }
-  .pastas { margin: 30px auto 0; max-width: 520px; font-family: Consolas, "Cascadia Mono", monospace; font-size: 15px; background: #000; border: 1px solid var(--borda); border-radius: 12px; padding: 16px 20px; white-space: pre; color: var(--neon); overflow-x: auto; }
+  .passos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; }
+  .passo { background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); overflow: hidden; }
+  .passo img { width: 100%; aspect-ratio: 720 / 600; object-fit: cover; object-position: top; border-bottom: 1px solid var(--borda); }
+  .passo .texto { padding: 18px 20px 22px; }
+  .num { display: inline-grid; place-items: center; width: 32px; height: 32px; border-radius: 9px; background: var(--neon); color: #03140a; font-weight: 900; margin-bottom: 8px; }
+  .passo h3 { margin: 0 0 4px; font-size: 19px; }
+  .passo p { margin: 0; color: var(--texto-2); font-size: 15.5px; }
 
-  /* recursos */
-  .recursos { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
-  .recurso { padding: 22px; border-radius: var(--raio); border: 1px solid var(--borda); background: linear-gradient(180deg, var(--cartao-2), var(--cartao)); transition: border-color .2s, transform .2s; }
-  .recurso:hover { border-color: rgba(57, 255, 136, .5); transform: translateY(-3px); }
-  .recurso svg { width: 30px; height: 30px; color: var(--neon); }
-  .recurso h3 { margin: 10px 0 4px; font-size: 18px; }
-  .recurso p { margin: 0; color: var(--texto-2); font-size: 15.5px; }
+  /* prova real */
+  .provas { display: grid; grid-template-columns: repeat(3, 1fr); gap: 16px; }
+  .prova { border-radius: var(--raio); overflow: hidden; border: 1px solid var(--borda); background: var(--cartao); }
+  .prova img { width: 100%; aspect-ratio: 1; object-fit: cover; }
+  .prova p { margin: 0; padding: 12px 16px; font-weight: 700; font-size: 15.5px; }
+  .prova p span { color: var(--neon); }
+  .pergunta { text-align: center; font-size: clamp(24px, 3.4vw, 34px); font-weight: 850; margin: 34px 0 0; }
 
-  /* público */
-  .publico { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; }
-  .lista { list-style: none; padding: 0; margin: 0; display: grid; gap: 12px; }
-  .lista li { display: flex; gap: 12px; align-items: flex-start; }
-  .lista .ok, .lista .nao { flex: none; width: 26px; height: 26px; border-radius: 8px; display: grid; place-items: center; font-weight: 900; font-size: 14px; }
-  .lista .ok { background: var(--neon-fundo); color: var(--neon); }
-  .lista .nao { background: rgba(255, 93, 108, .12); color: var(--perigo); }
-  .cartao-p { background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); padding: 28px; }
-  .cartao-p h3 { margin: 0 0 16px; font-size: 21px; }
+  /* benefícios */
+  .beneficios { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; }
+  .beneficio { text-align: center; background: linear-gradient(180deg, var(--cartao-2), var(--cartao)); border: 1px solid var(--borda); border-radius: var(--raio); padding: 24px 18px; }
+  .beneficio .ic { font-size: 34px; }
+  .beneficio h3 { margin: 8px 0 4px; font-size: 15px; letter-spacing: 1px; text-transform: uppercase; color: var(--neon); }
+  .beneficio p { margin: 0; color: var(--texto-2); font-size: 15px; }
 
-  /* oferta */
-  .oferta {
-    max-width: 760px; margin: 0 auto; position: relative; border-radius: 26px; padding: 3px;
-    background: linear-gradient(135deg, var(--neon), var(--ciano), var(--neon));
-    background-size: 200% 200%; animation: borda 6s ease infinite;
-  }
-  @keyframes borda { 50% { background-position: 100% 100%; } }
-  .oferta-dentro { background: var(--cartao); border-radius: 23px; padding: 38px; display: grid; grid-template-columns: 1.2fr 1fr; gap: 30px; align-items: center; }
-  .oferta h2 { margin: 0 0 14px; font-size: 30px; letter-spacing: -.5px; line-height: 1.15; }
-  .itens { list-style: none; padding: 0; margin: 0; display: grid; gap: 10px; }
-  .itens li { display: flex; gap: 10px; align-items: flex-start; }
-  .itens li::before { content: "✓"; color: var(--neon); font-weight: 900; }
-  .preco-box { text-align: center; background: #000; border: 1px solid var(--borda); border-radius: 18px; padding: 26px 18px; }
-  .preco-box .de { color: var(--texto-2); font-size: 15px; }
-  .preco-valor { font-size: 54px; font-weight: 900; letter-spacing: -1.5px; line-height: 1; margin: 6px 0 4px; color: var(--neon); text-shadow: 0 0 30px rgba(57, 255, 136, .35); }
-  .preco-box .pag { color: var(--texto-2); font-size: 14px; margin-bottom: 18px; }
-  .preco-box .cta { width: 100%; padding: 15px 16px; font-size: 18px; flex-direction: column; gap: 2px; }
+  /* planos */
+  .planos { display: grid; grid-template-columns: 1fr 1fr; gap: 22px; align-items: stretch; max-width: 860px; margin: 0 auto; }
+  .plano { position: relative; background: var(--cartao); border: 1px solid var(--borda); border-radius: 24px; padding: 30px 26px; display: flex; flex-direction: column; }
+  .plano.destaque { border: 2px solid var(--neon); box-shadow: 0 0 60px rgba(57,255,136,.18); }
+  .plano .fita { position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--neon); color: #03140a; font-weight: 900; font-size: 13px;
+                 letter-spacing: 1px; text-transform: uppercase; padding: 6px 16px; border-radius: 999px; white-space: nowrap; }
+  .plano h3 { margin: 0; font-size: 22px; }
+  .plano .desc { color: var(--texto-2); font-size: 15px; margin: 4px 0 16px; }
+  .plano .preco { font-size: 52px; font-weight: 900; letter-spacing: -1.5px; line-height: 1; margin: 0 0 4px; }
+  .plano.destaque .preco { color: var(--neon); }
+  .plano .preco small { font-size: 20px; letter-spacing: 0; margin-right: 4px; }
+  .plano .pag { color: var(--texto-2); font-size: 14px; margin-bottom: 18px; }
+  .plano ul { list-style: none; padding: 0; margin: 0 0 24px; display: grid; gap: 9px; flex: 1; }
+  .plano li { display: flex; gap: 10px; font-size: 15.5px; }
+  .plano li::before { content: "✓"; color: var(--neon); font-weight: 900; }
+  .plano li.nao { color: var(--texto-2); opacity: .7; }
+  .plano li.nao::before { content: "✕"; color: var(--perigo); }
+  .plano li b { color: var(--zap); }
 
-  /* garantia */
-  .garantia { display: flex; gap: 28px; align-items: center; max-width: 760px; margin: 0 auto; background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); padding: 28px; }
-  .selo-7 { flex: none; width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; text-align: center; background: radial-gradient(circle, #133d24, #0a1f13); border: 3px dashed var(--neon); color: var(--neon); font-weight: 900; line-height: 1.05; }
+  /* criador e garantia */
+  .criador { display: flex; gap: 26px; align-items: center; background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); padding: 28px; }
+  .criador .logo { flex: none; width: 110px; height: 110px; border-radius: 24px; display: grid; place-items: center; background: radial-gradient(circle, #133d24, #0a1f13);
+                   border: 2px solid var(--neon); font-weight: 900; font-size: 30px; color: var(--neon); }
+  .criador h3 { margin: 0 0 6px; font-size: 22px; }
+  .criador p { margin: 0; color: var(--texto-2); }
+  .garantia { display: flex; gap: 26px; align-items: center; background: var(--cartao); border: 1px solid var(--borda); border-radius: var(--raio); padding: 28px; }
+  .selo-7 { flex: none; width: 120px; height: 120px; border-radius: 50%; display: grid; place-items: center; text-align: center; background: radial-gradient(circle, #133d24, #0a1f13);
+            border: 3px dashed var(--neon); color: var(--neon); font-weight: 900; line-height: 1.05; }
   .selo-7 b { font-size: 40px; display: block; }
   .selo-7 span { font-size: 12px; letter-spacing: 1px; text-transform: uppercase; }
-  .garantia h3 { margin: 0 0 6px; font-size: 22px; }
+  .garantia h3 { margin: 0 0 6px; font-size: 24px; }
   .garantia p { margin: 0; color: var(--texto-2); }
 
   /* FAQ */
-  .faq { max-width: 780px; margin: 0 auto; display: grid; gap: 12px; }
-  details { background: var(--cartao); border: 1px solid var(--borda); border-radius: 14px; padding: 2px 22px; transition: border-color .2s; }
-  details[open] { border-color: rgba(57, 255, 136, .45); }
-  summary { cursor: pointer; font-weight: 700; padding: 16px 0; list-style: none; display: flex; justify-content: space-between; gap: 14px; }
+  .faq { display: grid; gap: 12px; }
+  details { background: var(--cartao); border: 1px solid var(--borda); border-radius: 14px; padding: 2px 22px; }
+  details[open] { border-color: rgba(57,255,136,.45); }
+  summary { cursor: pointer; font-weight: 700; padding: 15px 0; list-style: none; display: flex; justify-content: space-between; gap: 14px; }
   summary::-webkit-details-marker { display: none; }
   summary::after { content: "+"; color: var(--neon); font-size: 24px; line-height: 1; transition: transform .2s; }
   details[open] summary::after { transform: rotate(45deg); }
-  details p { margin: 0 0 18px; color: var(--texto-2); }
+  details p { margin: 0 0 16px; color: var(--texto-2); }
 
-  .aviso { max-width: 780px; margin: 0 auto; border: 1px solid rgba(253, 224, 71, .35); background: rgba(253, 224, 71, .07); color: #fef3c7; border-radius: 14px; padding: 18px 22px; font-size: 15px; }
+  .aviso { border: 1px solid rgba(253,224,71,.35); background: rgba(253,224,71,.07); color: #fef3c7; border-radius: 14px; padding: 18px 22px; font-size: 15px; }
   .aviso strong { color: var(--amarelo); display: block; margin-bottom: 4px; }
 
-  .final { text-align: center; }
-  .final h2 { font-size: clamp(30px, 4.5vw, 48px); letter-spacing: -1px; line-height: 1.1; margin: 0 0 14px; }
-  .final p { color: var(--texto-2); margin: 0 0 30px; font-size: 18px; }
-  .final .selos { justify-content: center; }
+  .suporte { text-align: center; }
+  .suporte h2 { font-size: clamp(26px, 3.6vw, 36px); margin: 0 0 8px; }
+  .suporte p { color: var(--texto-2); margin: 0 auto 24px; max-width: 52ch; }
+  .zap { display: inline-flex; align-items: center; gap: 10px; background: var(--zap); color: #04210f; font-weight: 900; text-decoration: none; text-transform: uppercase;
+         padding: 16px 30px; border-radius: 14px; box-shadow: 0 12px 34px rgba(37,211,102,.35); }
+  .zap svg { width: 24px; height: 24px; }
 
-  footer { border-top: 1px solid var(--borda); padding: 30px 0 110px; font-size: 14px; color: var(--texto-2); }
-  footer .container { display: flex; flex-wrap: wrap; gap: 8px 24px; justify-content: space-between; }
+  footer { border-top: 1px solid var(--borda); padding: 30px 0 120px; font-size: 13px; color: var(--texto-2); text-align: center; }
+  footer p { margin: 0 0 8px; }
 
-  /* barra fixa no celular */
-  .barra-compra {
-    position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: none;
-    background: rgba(5, 7, 10, .94); backdrop-filter: blur(10px); border-top: 1px solid var(--borda);
-    padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); align-items: center; justify-content: space-between; gap: 12px;
-    transform: translateY(110%); transition: transform .3s;
-  }
+  .zap-flutuante { position: fixed; right: 16px; bottom: 88px; z-index: 45; width: 58px; height: 58px; border-radius: 50%; background: var(--zap); display: grid; place-items: center;
+                   box-shadow: 0 10px 30px rgba(0,0,0,.5); }
+  .zap-flutuante svg { width: 32px; height: 32px; color: #fff; }
+  .barra-compra { position: fixed; left: 0; right: 0; bottom: 0; z-index: 40; display: none; background: rgba(5,7,10,.95); backdrop-filter: blur(10px); border-top: 1px solid var(--borda);
+                  padding: 10px 16px calc(10px + env(safe-area-inset-bottom)); align-items: center; justify-content: space-between; gap: 12px; transform: translateY(110%); transition: transform .3s; }
   .barra-compra.mostrar { transform: none; }
-  .barra-compra .valor { font-weight: 900; color: var(--neon); font-size: 20px; line-height: 1.1; }
+  .barra-compra .valor { font-weight: 900; color: var(--neon); font-size: 19px; line-height: 1.1; }
   .barra-compra .valor small { display: block; color: var(--texto-2); font-weight: 600; font-size: 12px; }
-  .barra-compra .cta { padding: 13px 18px; font-size: 15px; animation: none; }
+  .barra-compra .cta { padding: 12px 18px; font-size: 15px; animation: none; }
 
-  /* aviso para o dono da página: link do checkout não configurado */
-  .aviso-config { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 60; background: #b91c1c; color: #fff; font-weight: 700; font-size: 14px; padding: 10px 16px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.5); max-width: 92%; text-align: center; }
-
-  /* animação ao rolar */
-  .video-real { position: relative; width: min(360px, 100%); margin: 0 auto; border-radius: 22px; overflow: hidden;
-                 box-shadow: 0 0 0 2px var(--neon-2), 0 0 60px rgba(57,255,136,.25); background: #000; }
-  .video-real video { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; }
-  .video-real .som { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); border: 0; border-radius: 999px;
-                     background: var(--neon); color: #05070a; font-weight: 800; font-size: 15px; padding: 10px 18px; cursor: pointer; white-space: nowrap; }
-  .video-real .som[hidden] { display: none; }
   .revelar { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
   .revelar.visivel { opacity: 1; transform: none; }
-  @media (prefers-reduced-motion: reduce) {
-    html { scroll-behavior: auto; }
-    *, *::before, *::after { animation: none !important; transition: none !important; }
-    .revelar { opacity: 1; transform: none; }
-  }
+  @media (prefers-reduced-motion: reduce) { html { scroll-behavior: auto; } *, *::before, *::after { animation: none !important; transition: none !important; } .revelar { opacity: 1; transform: none; } }
 
-  /* ---------- telas menores ---------- */
   @media (max-width: 900px) {
-    .hero { padding: 40px 0 50px; }
-    .hero .container, .publico, .oferta-dentro { grid-template-columns: 1fr; }
-    .tv { margin: 10px auto 0; }
-    .usb { left: -6px; }
-    .dores, .passos, .recursos { grid-template-columns: 1fr; }
-    .passos { max-width: 460px; margin: 0 auto; }
-    .antes-depois { grid-template-columns: 1fr; }
-    .seta { transform: rotate(90deg); justify-self: center; }
-    .sub { max-width: none; }
-    section { padding: 56px 0; }
-    .oferta-dentro { padding: 26px 20px; }
-    .garantia { flex-direction: column; text-align: center; }
+    .passos, .provas { grid-template-columns: 1fr; max-width: 440px; margin-inline: auto; }
+    .beneficios { grid-template-columns: 1fr 1fr; }
+    .motivos, .planos { grid-template-columns: 1fr; }
+    .planos { gap: 30px; }
+    .plano.destaque { order: -1; }
+    section { padding: 54px 0; }
+    .criador, .garantia { flex-direction: column; text-align: center; }
     .barra-compra { display: flex; }
   }
-  @media (max-width: 420px) {
-    .cta { font-size: 16px; padding: 16px 22px; }
-    h1 { letter-spacing: -1px; }
-  }
+  @media (max-width: 420px) { .cta { font-size: 17px; padding: 16px 22px; } .beneficio { padding: 18px 12px; } }
 </style>
 </head>
 <body>
-<a class="pular" href="#oferta">Pular para a oferta</a>
 
 <div class="faixa-topo">✓ Para TVs com <strong>entrada USB</strong> · Assista <strong>sem internet</strong> · PIX ou cartão</div>
 
 <main>
-  <!-- HERO -->
+  <!-- TOPO: promessa + vídeo + preço -->
   <section class="hero" aria-labelledby="titulo-principal">
     <div class="container">
-      <div class="revelar">
-        <span class="etiqueta"><span class="ponto" aria-hidden="true"></span>Sua TV não é Smart? Sem problema.</span>
-        <h1 id="titulo-principal">Transforme sua TV antiga em uma <span class="neon">TV multimídia.</span></h1>
-        <p class="sub">Assista seus <strong>clipes favoritos</strong> e ouça suas <strong>músicas preferidas</strong> direto do pendrive, <strong>sem precisar de internet na TV</strong>. Você escolhe o link, e o PendrivePlay baixa e converte tudo no formato que a sua TV lê.</p>
-        <a class="cta comprar" href="#oferta">Quero o PendrivePlay <span aria-hidden="true">→</span></a>
-        <div class="selos">
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Garantia de 7 dias</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download na hora</span>
-          <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>PIX ou cartão</span>
-        </div>
+      <span class="chapeu">Sua TV não é Smart? Sem problema.</span>
+      <h1 id="titulo-principal">Transforme sua TV antiga em uma <span class="neon">TV multimídia</span></h1>
+      <p class="sub">Seus <strong>clipes</strong> e <strong>músicas favoritas</strong> na tela grande, direto do pendrive, <strong>sem internet na TV</strong> e sem trocar de aparelho.</p>
+      <div class="video-real">
+        <video id="video-real" src="midia/funcionando.mp4" poster="midia/funcionando.jpg" muted loop playsinline autoplay preload="metadata" controls></video>
+        <button type="button" class="som" id="ligar-som">🔊 Aperte para ouvir</button>
       </div>
-      <div class="tv revelar" role="img" aria-label="TV comum tocando um clipe direto do pendrive, com a lista de vídeos e músicas">
-        <div class="tv-tela">
-          <div class="tela-usb" aria-hidden="true">
-            <div class="tela-topo"><span>USB · VIDEOS_TV</span><span>SEM INTERNET ✓</span></div>
-            <div class="tocando-agora">
-              <div class="play"></div>
-              <div><b>Meu clipe favorito</b><span>Tocando do pendrive</span></div>
-              <div class="eq"><i></i><i></i><i></i><i></i></div>
-            </div>
-            <ul class="arquivos">
-              <li>Show ao vivo.mp4</li>
-              <li>Clipe dos anos 80.mp4</li>
-              <li class="musica">Musica do momento.mp3</li>
-            </ul>
-          </div>
-        </div>
-        <div class="tv-pe" aria-hidden="true"></div>
-        <div class="tv-base" aria-hidden="true"></div>
-        <div class="usb" aria-hidden="true">Pendrive ✓</div>
+      <div class="preco-topo">
+        <div class="leve">Leve hoje por apenas</div>
+        <div class="valor"><small>R$</small>19,90</div>
+        <div class="obs">Pagamento único · sem mensalidade</div>
       </div>
+      <a class="cta" href="#planos">Sim, eu quero agora!<small>Escolha seu plano abaixo</small></a>
+      <div class="selos"><span>Download na hora</span><span>Garantia de 7 dias</span><span>Compra 100% segura</span></div>
     </div>
   </section>
 
-  <!-- DORES -->
-  <!-- FUNCIONANDO DE VERDADE (vídeo real, gravado numa barbearia) -->
-  <section aria-labelledby="real">
+  <!-- POR QUE USAR -->
+  <section class="alt" aria-labelledby="porque">
     <div class="container">
       <div class="titulo revelar">
-        <span class="chapeu">Teste real</span>
-        <h2 id="real">Veja funcionando numa barbearia de verdade</h2>
-        <p>Do computador para o pendrive e direto para uma TV comum, sem internet.</p>
+        <span class="chapeu">Por que o PendrivePlay</span>
+        <h2 id="porque">Por que você deve dar vida nova à sua TV</h2>
       </div>
-      <div class="video-real revelar">
-        <video id="video-real" src="midia/funcionando.mp4" poster="midia/funcionando.jpg" muted loop playsinline preload="metadata" controls></video>
-        <button type="button" class="som" id="ligar-som">🔊 Toque para ouvir</button>
-      </div>
-    </div>
-  </section>
-
-  <section class="alt" aria-labelledby="dores">
-    <div class="container">
-      <div class="titulo revelar">
-        <span class="chapeu">Sua TV ainda tem muito para dar</span>
-        <h2 id="dores">Não troque de TV só para assistir seus vídeos</h2>
-      </div>
-      <div class="dores">
-        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>Sem Smart, sem aplicativos</h3><p>A TV funciona perfeitamente, mas não tem aplicativos de vídeo e música. Trocar por uma Smart custa caro.</p></div>
-        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>Internet fraca ou cara</h3><p>Assistir vídeo pela internet trava, consome dados e depende do sinal. No pendrive, o vídeo está sempre lá.</p></div>
-        <div class="dor revelar"><div class="x" aria-hidden="true">✕</div><h3>"Arquivo não suportado"</h3><p>Você copia um vídeo para o pendrive e a TV não abre. O formato e o nome do arquivo precisam estar certos.</p></div>
-      </div>
-    </div>
-  </section>
-
-  <!-- ANTES E DEPOIS -->
-  <section aria-labelledby="antes-depois">
-    <div class="container">
-      <div class="titulo revelar">
-        <span class="chapeu">A transformação</span>
-        <h2 id="antes-depois">A mesma TV, uma nova vida</h2>
-      </div>
-      <div class="antes-depois">
-        <div class="quadro antes revelar">
-          <h3>Antes</h3>
-          <div class="mini-tv" role="img" aria-label="TV mostrando mensagem de arquivo não suportado">
-            <div class="erro-tv"><b>Arquivo não suportado</b>Não é possível reproduzir este arquivo.</div>
-          </div>
-          <ul><li>Só os canais de sempre</li><li>Vídeo do pendrive que a TV não abre</li><li>Clipes e músicas só no celular</li></ul>
-        </div>
-        <div class="seta" aria-hidden="true">➜</div>
-        <div class="quadro depois revelar">
-          <h3>Com o PendrivePlay</h3>
-          <div class="mini-tv tocando" role="img" aria-label="TV reproduzindo o vídeo do pendrive">
-            <div class="play"></div>
-            <div class="barra-tv"><span></span></div>
-          </div>
-          <ul><li>Seus clipes favoritos na tela grande</li><li>Músicas tocando pela TV ou pelo som</li><li>Sem internet, sem travar, sem mensalidade</li></ul>
-        </div>
+      <div class="motivos">
+        <div class="motivo revelar"><div class="ic" aria-hidden="true">💸</div><div><h3>Não precisa trocar de TV</h3><p>Sua TV funciona, só não tem aplicativos. Com o pendrive certo, ela toca seus clipes e músicas como uma Smart.</p></div></div>
+        <div class="motivo revelar"><div class="ic" aria-hidden="true">📶</div><div><h3>Sem internet, sem travar</h3><p>O vídeo fica no pendrive. Nada de sinal fraco, travamento ou gasto de dados na hora de assistir.</p></div></div>
+        <div class="motivo revelar"><div class="ic" aria-hidden="true">📺</div><div><h3>Formato que a TV lê</h3><p>Chega de "arquivo não suportado". O programa converte para o padrão aceito pelas TVs com USB, com nomes que a TV entende.</p></div></div>
+        <div class="motivo revelar"><div class="ic" aria-hidden="true">💈</div><div><h3>Perfeito para o seu comércio</h3><p>Barbearia, salão ou loja: monte sua seleção uma vez e deixe a TV tocando o dia todo para os clientes.</p></div></div>
       </div>
     </div>
   </section>
 
   <!-- COMO FUNCIONA -->
-  <section class="alt" aria-labelledby="como">
+  <section aria-labelledby="como">
     <div class="container">
       <div class="titulo revelar">
         <span class="chapeu">Como funciona</span>
         <h2 id="como">Do computador para a TV em 3 passos</h2>
-        <p>Você prepara o pendrive no computador uma vez e assiste na TV quantas vezes quiser.</p>
+        <p>Você escolhe o link, e o PendrivePlay baixa, converte e salva direto no pendrive.</p>
       </div>
       <div class="passos">
-        <div class="passo revelar">
-          <div class="img"><img src="img/02_links_colados.png" alt="Links colados na caixa do PendrivePlay com o pendrive detectado" loading="lazy" width="720" height="680"></div>
-          <div class="texto"><span class="num">1</span><h3>Escolha seus clipes e músicas</h3><p>No computador, cole o link de cada vídeo ou música que você quer. Pode ser um ou vários de uma vez.</p></div>
-        </div>
-        <div class="passo revelar">
-          <div class="img"><img src="img/03_baixando.png" alt="PendrivePlay baixando e convertendo, com a barra de progresso" loading="lazy" width="720" height="680"></div>
-          <div class="texto"><span class="num">2</span><h3>O PendrivePlay prepara tudo</h3><p>Ele baixa, converte para o formato que a TV lê e salva direto no pendrive, organizado em pastas.</p></div>
-        </div>
-        <div class="passo revelar">
-          <div class="img"><img src="img/04_pronto.png" alt="Três vídeos salvos na pasta VIDEOS_TV do pendrive" loading="lazy" width="720" height="680"></div>
-          <div class="texto"><span class="num">3</span><h3>Plugue na TV e assista</h3><p>Coloque o pendrive na entrada USB da TV e assista, sem internet. Também funciona no som e no carro.</p></div>
-        </div>
+        <div class="passo revelar"><img src="img/02_links_colados.png" alt="Links colados no PendrivePlay com o pendrive detectado" loading="lazy" width="720" height="680"><div class="texto"><span class="num">1</span><h3>Cole seus links</h3><p>No computador, cole o link de cada clipe ou música. Pode ser um ou vários de uma vez.</p></div></div>
+        <div class="passo revelar"><img src="img/03_baixando.png" alt="PendrivePlay baixando e convertendo" loading="lazy" width="720" height="680"><div class="texto"><span class="num">2</span><h3>Ele prepara tudo</h3><p>Baixa, converte para o formato da TV e salva no pendrive, em pastas separadas de vídeo e música.</p></div></div>
+        <div class="passo revelar"><img src="img/04_pronto.png" alt="Vídeos salvos na pasta VIDEOS_TV do pendrive" loading="lazy" width="720" height="680"><div class="texto"><span class="num">3</span><h3>Plugue na TV</h3><p>Coloque o pendrive na entrada USB da TV e dê play. Também funciona no som e no carro.</p></div></div>
       </div>
-      <div class="pastas revelar" aria-label="Pastas criadas no pendrive">E:\
-├── VIDEOS_TV\   seus clipes e vídeos
-└── MP3\         suas músicas</div>
     </div>
   </section>
 
-  <!-- RECURSOS -->
-  <section aria-labelledby="recursos">
+  <!-- PROVA REAL -->
+  <section class="alt" aria-labelledby="prova">
     <div class="container">
       <div class="titulo revelar">
-        <span class="chapeu">Recursos</span>
-        <h2 id="recursos">Feito para quem quer praticidade</h2>
+        <span class="chapeu">Testado de verdade</span>
+        <h2 id="prova">Funcionando numa barbearia, numa TV comum</h2>
+        <p>Imagens do nosso teste real, sem montagem: TV sem Smart, pendrive e nenhuma internet na TV.</p>
       </div>
-      <div class="recursos">
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="2" y="5" width="20" height="13" rx="2"/><path d="M8 21h8M12 18v3"/></svg><h3>Formato que a TV lê</h3><p>Vídeo em HD (720p) no padrão mais aceito por TVs com USB, inclusive modelos antigos e TV Box.</p></div>
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M9 18V5l12-2v13"/><circle cx="6" cy="18" r="3"/><circle cx="18" cy="16" r="3"/></svg><h3>Suas músicas em MP3</h3><p>Só o áudio, com boa qualidade, numa pasta separada. Para ouvir na TV, no som ou no carro.</p></div>
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M8 6h13M8 12h13M8 18h13M3 6h.01M3 12h.01M3 18h.01"/></svg><h3>Vários de uma vez</h3><p>Monte a sua seleção de clipes e músicas de uma vez só. O programa baixa um por um, sozinho.</p></div>
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M4 7h16M4 12h10M4 17h7"/></svg><h3>Nomes que a TV lê</h3><p>Salva com nomes curtos, sem acentos e sem símbolos, para a TV listar todos os arquivos.</p></div>
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><rect x="6" y="4" width="4" height="16" rx="1"/><rect x="14" y="4" width="4" height="16" rx="1"/></svg><h3>Pausar e cancelar</h3><p>Pause e continue de onde parou. Cancelou? O que já terminou continua no pendrive.</p></div>
-        <div class="recurso revelar"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M5 12l5 5L20 7"/></svg><h3>Instalação simples</h3><p>Não pede senha de administrador e já vem com tudo o que precisa. Inclui guia em PDF.</p></div>
+      <div class="provas">
+        <figure class="prova revelar" style="margin:0"><img src="midia/prova1.jpg" alt="TV na parede de uma barbearia tocando um vídeo" loading="lazy" width="600" height="600"><p><span>✓</span> TV comum da barbearia tocando</p></figure>
+        <figure class="prova revelar" style="margin:0"><img src="midia/prova2.jpg" alt="Pendrive conectado na entrada USB atrás da TV" loading="lazy" width="600" height="600"><p><span>✓</span> É só ligar o pendrive na USB</p></figure>
+        <figure class="prova revelar" style="margin:0"><img src="midia/prova3.jpg" alt="Clipe sendo reproduzido na tela da TV" loading="lazy" width="600" height="600"><p><span>✓</span> O clipe toca direto do pendrive</p></figure>
+      </div>
+      <p class="pergunta revelar">A próxima TV a ganhar vida nova <span class="neon">é a sua?</span></p>
+    </div>
+  </section>
+
+  <!-- BENEFÍCIOS -->
+  <section aria-labelledby="beneficios">
+    <div class="container">
+      <div class="titulo revelar">
+        <span class="chapeu">Benefícios</span>
+        <h2 id="beneficios">O que você leva ao garantir hoje</h2>
+      </div>
+      <div class="beneficios">
+        <div class="beneficio revelar"><div class="ic" aria-hidden="true">⚡</div><h3>Download na hora</h3><p>Pagou, recebeu. No PIX, a liberação sai em minutos.</p></div>
+        <div class="beneficio revelar"><div class="ic" aria-hidden="true">♾️</div><h3>Pagamento único</h3><p>Sem mensalidade. Use para sempre no seu computador.</p></div>
+        <div class="beneficio revelar"><div class="ic" aria-hidden="true">🔄</div><h3>Atualizações</h3><p>Quando os sites mudarem, você recebe a versão nova sem pagar.</p></div>
+        <div class="beneficio revelar"><div class="ic" aria-hidden="true">📘</div><h3>Guia em PDF</h3><p>Passo a passo com imagens, da instalação até a TV.</p></div>
       </div>
     </div>
   </section>
 
-  <!-- PARA QUEM -->
-  <section class="alt" aria-labelledby="publico">
+  <!-- PLANOS -->
+  <section class="alt" id="planos" aria-labelledby="titulo-planos">
     <div class="container">
-      <div class="titulo revelar"><span class="chapeu">Seja sincero</span><h2 id="publico">É para você?</h2></div>
-      <div class="publico">
-        <div class="cartao-p revelar">
-          <h3>Sim, se você…</h3>
-          <ul class="lista">
-            <li><span class="ok" aria-hidden="true">✓</span><span>tem uma TV sem Smart, mas com entrada USB</span></li>
-            <li><span class="ok" aria-hidden="true">✓</span><span>quer assistir clipes e ouvir músicas sem depender de internet na TV</span></li>
-            <li><span class="ok" aria-hidden="true">✓</span><span>quer levar músicas para o som ou para o carro pelo pendrive</span></li>
-            <li><span class="ok" aria-hidden="true">✓</span><span>quer algo simples, sem complicação</span></li>
+      <div class="titulo revelar">
+        <span class="chapeu">Escolha seu plano</span>
+        <h2 id="titulo-planos">Dê vida nova à sua TV hoje</h2>
+        <p>Os dois planos têm o programa completo. A diferença é a ajuda pelo WhatsApp.</p>
+      </div>
+      <div class="planos">
+        <div class="plano revelar">
+          <h3>Básico</h3>
+          <div class="desc">Para quem se vira bem com o guia</div>
+          <div class="preco"><small>R$</small>19,90</div>
+          <div class="pag">Pagamento único · PIX ou cartão</div>
+          <ul>
+            <li>PendrivePlay para Windows 10 e 11</li>
+            <li>Guia de instalação e uso em PDF</li>
+            <li>Atualizações gratuitas</li>
+            <li>Garantia de 7 dias</li>
+            <li class="nao">Suporte VIP pelo WhatsApp</li>
           </ul>
+          <a class="cta secundario cheio comprar" data-plano="basico" href="#planos">Quero o Básico</a>
         </div>
-        <div class="cartao-p revelar">
-          <h3>Não, se você…</h3>
-          <ul class="lista">
-            <li><span class="nao" aria-hidden="true">✕</span><span>tem TV sem entrada USB e nenhum aparelho com USB ligado nela (como TV Box ou DVD)</span></li>
-            <li><span class="nao" aria-hidden="true">✕</span><span>não tem computador com Windows 10 ou 11 (o programa roda no computador)</span></li>
-            <li><span class="nao" aria-hidden="true">✕</span><span>precisa de vídeo em 4K ou Full HD (ele gera 720p, para funcionar em mais TVs)</span></li>
-            <li><span class="nao" aria-hidden="true">✕</span><span>quer baixar conteúdo pago, privado ou protegido (ele não faz isso)</span></li>
+        <div class="plano destaque revelar">
+          <div class="fita">Recomendado</div>
+          <h3>Completo + Suporte VIP</h3>
+          <div class="desc">Para quem quer ajuda para deixar tudo funcionando</div>
+          <div class="preco"><small>R$</small>29,90</div>
+          <div class="pag">Pagamento único · PIX ou cartão</div>
+          <ul>
+            <li>Tudo do plano Básico</li>
+            <li><span><b>Suporte VIP pelo WhatsApp</b></span></li>
+            <li>Ajuda para instalar no seu computador</li>
+            <li>Ajuda para achar a USB e tocar na sua TV</li>
+            <li>Tire dúvidas sempre que precisar</li>
           </ul>
+          <a class="cta cheio comprar" data-plano="completo" href="#planos">Quero o Completo<small>com Suporte VIP no WhatsApp</small></a>
         </div>
       </div>
+      <div class="selos revelar"><span>Acesso imediato após a compra</span><span>7 dias de garantia</span><span>Ambiente 100% seguro</span></div>
     </div>
   </section>
 
-  <!-- OFERTA -->
-  <section id="oferta" aria-labelledby="titulo-oferta">
-    <div class="container">
-      <div class="oferta revelar">
-        <div class="oferta-dentro">
-          <div>
-            <h2 id="titulo-oferta">Dê vida nova à sua TV hoje</h2>
-            <ul class="itens">
-              <li>PendrivePlay para Windows 10 e 11 (você instala no computador)</li>
-              <li>Guia de instalação e uso em PDF, com imagens</li>
-              <li>Atualizações gratuitas quando os sites mudarem</li>
-              <li>Suporte por mensagem</li>
-              <li>Garantia incondicional de 7 dias</li>
-            </ul>
-          </div>
-          <div class="preco-box">
-            <div class="de">Pagamento único, sem mensalidade</div>
-            <div class="preco-valor" data-preco>R$ 19,90</div>
-            <div class="pag">PIX ou cartão de crédito</div>
-            <a class="cta comprar" href="#oferta">Comprar agora<small>Download na hora</small></a>
-          </div>
+  <!-- QUEM CRIOU -->
+  <section aria-labelledby="criador">
+    <div class="estreito">
+      <div class="criador revelar">
+        <div class="logo" aria-hidden="true">YC</div>
+        <div>
+          <span class="chapeu">Quem criou</span>
+          <h3 id="criador">YC Soluções &amp; Tecnologia</h3>
+          <p>O PendrivePlay nasceu de um problema real: TVs boas, sem Smart, paradas na parede. Criamos um programa simples, testado na prática numa barbearia, para qualquer pessoa preparar o pendrive certo e colocar a TV para tocar, sem complicação.</p>
         </div>
       </div>
     </div>
   </section>
 
   <!-- GARANTIA -->
-  <section style="padding-top:0" aria-labelledby="garantia">
-    <div class="container">
+  <section class="alt" aria-labelledby="garantia">
+    <div class="estreito">
       <div class="garantia revelar">
         <div class="selo-7" aria-hidden="true"><div><b>7</b><span>dias de<br>garantia</span></div></div>
         <div>
-          <h3 id="garantia">Risco zero para você</h3>
-          <p>Instale, prepare o seu pendrive e teste na sua TV. Se não gostar, por qualquer motivo, peça o reembolso em até 7 dias e você recebe 100% do valor de volta, sem perguntas.</p>
+          <h3 id="garantia">E você tem garantia de 7 dias!</h3>
+          <p>Instale, prepare seu pendrive e teste na sua TV. Se não gostar, por qualquer motivo, peça o reembolso em até 7 dias e receba 100% do valor de volta, sem perguntas.</p>
         </div>
       </div>
+      <div style="text-align:center;margin-top:30px" class="revelar"><a class="cta" href="#planos">Sim, eu quero agora!</a></div>
     </div>
   </section>
 
   <!-- FAQ -->
-  <section class="alt" aria-labelledby="faq">
-    <div class="container">
+  <section aria-labelledby="faq">
+    <div class="estreito">
       <div class="titulo revelar"><span class="chapeu">Dúvidas</span><h2 id="faq">Perguntas frequentes</h2></div>
       <div class="faq">
-        <details class="revelar"><summary>Minha TV precisa ser Smart?</summary><p>Não. Ela só precisa ter uma entrada USB que toque vídeos e músicas, como a maioria das TVs LCD e LED dos últimos anos. Procure "USB" na lateral ou atrás da TV, e "Mídia" ou "USB" no controle remoto.</p></details>
-        <details class="revelar"><summary>Preciso de internet para assistir?</summary><p>Na TV, não: tudo toca direto do pendrive. Você só precisa de internet no computador, na hora de baixar os vídeos e as músicas.</p></details>
-        <details class="revelar"><summary>Minha TV é de tubo e não tem USB. Funciona?</summary><p>Sozinha, não. Mas funciona se você ligar nela um aparelho com entrada USB, como um TV Box ou um DVD com USB.</p></details>
-        <details class="revelar"><summary>Como eu recebo o programa?</summary><p>Logo depois da confirmação do pagamento, você recebe por e-mail o acesso ao instalador e ao guia em PDF. No PIX, a confirmação costuma ser em poucos minutos.</p></details>
-        <details class="revelar"><summary>Que links eu posso usar?</summary><p>Links de vídeos e músicas de muitos sites. O programa usa o yt-dlp, uma ferramenta de código aberto compatível com centenas de sites. Você escolhe o link, e ele baixa e converte.</p></details>
-        <details class="revelar"><summary>O que eu preciso para usar?</summary><p>Um computador com Windows 10 ou 11 (64 bits) e internet para baixar, um pendrive (quase todo pendrive já vem pronto para TV) e uma TV ou aparelho com entrada USB.</p></details>
-        <details class="revelar"><summary>O Windows mostrou "O Windows protegeu o computador". É vírus?</summary><p>Não. O aviso aparece porque o instalador não tem uma assinatura digital paga. Clique em "Mais informações" e depois em "Executar assim mesmo". O passo a passo está no guia.</p></details>
-        <details class="revelar"><summary>E se o antivírus bloquear?</summary><p>Programas feitos em Python e sem assinatura paga às vezes são marcados por engano. O código é aberto, e qualquer pessoa pode conferir no GitHub.</p></details>
-        <details class="revelar"><summary>Um dia parou de baixar. E agora?</summary><p>Os sites mudam com frequência. Quando isso acontecer, uma versão nova será disponibilizada sem custo para quem já comprou.</p></details>
-        <details class="revelar"><summary>Tem mensalidade?</summary><p>Não. É pagamento único: você paga uma vez e usa o programa para sempre.</p></details>
-        <details class="revelar"><summary>E se eu não gostar?</summary><p>Você tem 7 dias de garantia incondicional. Peça o reembolso pela própria plataforma de pagamento e recebe 100% do valor de volta.</p></details>
+        <details class="revelar"><summary>Minha TV precisa ser Smart?</summary><p>Não. Ela só precisa ter entrada USB que toque vídeos, como a maioria das TVs LCD e LED. Procure "USB" atrás ou na lateral da TV.</p></details>
+        <details class="revelar"><summary>Preciso de internet para assistir?</summary><p>Na TV, não: tudo toca direto do pendrive. Você só usa internet no computador, na hora de baixar.</p></details>
+        <details class="revelar"><summary>O que eu preciso para usar?</summary><p>Um computador com Windows 10 ou 11, um pendrive e uma TV (ou TV Box, DVD) com entrada USB.</p></details>
+        <details class="revelar"><summary>Como recebo o programa?</summary><p>Logo depois da confirmação do pagamento, você é levado à página de download e recebe o acesso por e-mail. No PIX, leva poucos minutos.</p></details>
+        <details class="revelar"><summary>Como funciona o Suporte VIP?</summary><p>No plano Completo, depois da compra você recebe o acesso ao nosso WhatsApp de suporte. Lá ajudamos você a instalar, preparar o pendrive e tocar na sua TV.</p></details>
+        <details class="revelar"><summary>O Windows mostrou "O Windows protegeu o computador". É vírus?</summary><p>Não. O aviso aparece porque o instalador não tem uma assinatura digital paga. Clique em "Mais informações" e em "Executar assim mesmo". Está tudo explicado no guia.</p></details>
+        <details class="revelar"><summary>Tem mensalidade?</summary><p>Não. Você paga uma vez e usa para sempre.</p></details>
       </div>
     </div>
   </section>
 
-  <!-- AVISO -->
-  <section style="padding:44px 0" aria-label="Aviso de uso">
-    <div class="container">
-      <div class="aviso"><strong>Use com responsabilidade</strong>Baixe apenas conteúdo que você tem direito de baixar: vídeos seus, conteúdo em domínio público, com licença livre ou com autorização do autor. Os termos de uso de alguns sites não permitem baixar conteúdo fora do aplicativo ou do site deles. Respeitar esses termos e as leis de direitos autorais é responsabilidade de quem usa o programa.</div>
-    </div>
+  <section style="padding:10px 0 50px" aria-label="Aviso de uso">
+    <div class="estreito"><div class="aviso"><strong>Use com responsabilidade</strong>Baixe apenas conteúdo que você tem direito de usar: vídeos seus, em domínio público, com licença livre ou com autorização do autor. Em comércios, tocar músicas para clientes pode exigir licença do ECAD. Respeitar os termos dos sites e as leis de direitos autorais é responsabilidade de quem usa o programa.</div></div>
   </section>
 
-  <!-- CHAMADA FINAL -->
-  <section class="final alt">
-    <div class="container revelar">
-      <h2>Sua TV antiga, agora <span class="neon">multimídia.</span></h2>
-      <p>Seus clipes e músicas favoritos na tela grande, direto do pendrive e sem internet.</p>
-      <a class="cta comprar" href="#oferta">Quero por <span data-preco>R$ 19,90</span></a>
-      <div class="selos">
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 2l8 4v6c0 5-3.5 9-8 10-4.5-1-8-5-8-10V6z"/><path d="M9 12l2 2 4-4"/></svg>Garantia de 7 dias</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><path d="M12 3v12M7 10l5 5 5-5M5 21h14"/></svg>Download na hora</span>
-        <span><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" aria-hidden="true"><rect x="3" y="6" width="18" height="12" rx="2"/><path d="M3 10h18"/></svg>PIX ou cartão</span>
-      </div>
+  <!-- SUPORTE -->
+  <section class="alt suporte" aria-labelledby="duvida">
+    <div class="estreito revelar">
+      <h2 id="duvida">Ainda tem alguma dúvida?</h2>
+      <p>Chame no WhatsApp e fale direto com a gente. Respondemos o mais rápido possível.</p>
+      <a class="zap link-zap" href="#" target="_blank" rel="noopener">
+        <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+        Falar com o suporte
+      </a>
     </div>
   </section>
 </main>
 
 <footer>
   <div class="container">
-    <span>PendrivePlay · versão 1.1.0 · Windows 10 e 11</span>
-    <span>Software livre (MIT) · <a href="https://github.com/Yuric9/PendrivePlay" target="_blank" rel="noopener">código no GitHub</a> · inclui FFmpeg (GPLv3) e yt-dlp</span>
+    <p>PendrivePlay · versão 1.1.0 · Windows 10 e 11 · YC Soluções &amp; Tecnologia</p>
+    <p>Software livre (MIT) · <a href="https://github.com/Yuric9/PendrivePlay" target="_blank" rel="noopener">código no GitHub</a> · inclui FFmpeg (GPLv3) e yt-dlp</p>
+    <p>Este site não faz parte do site do Facebook ou da Meta Platforms, Inc. e não é endossado pelo Facebook de nenhuma forma. FACEBOOK é uma marca registrada da Meta Platforms, Inc.</p>
   </div>
 </footer>
 
+<a class="zap-flutuante link-zap" href="#" target="_blank" rel="noopener" aria-label="Falar no WhatsApp">
+  <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true"><path d="M12 2a10 10 0 0 0-8.6 15.1L2 22l5-1.3A10 10 0 1 0 12 2zm0 18.2c-1.5 0-3-.4-4.3-1.2l-.3-.2-3 .8.8-2.9-.2-.3A8.2 8.2 0 1 1 12 20.2zm4.5-6.1c-.2-.1-1.5-.7-1.7-.8-.2-.1-.4-.1-.6.1l-.8 1c-.1.2-.3.2-.5.1a6.7 6.7 0 0 1-3.3-2.9c-.2-.4.2-.4.7-1.3.1-.2 0-.3 0-.4l-.8-1.8c-.2-.5-.4-.4-.6-.4h-.5c-.2 0-.4.1-.7.3-.2.3-.9.9-.9 2.2s.9 2.5 1 2.7c.1.2 1.8 2.8 4.4 3.9 1.6.7 2.3.8 3.1.6.5-.1 1.5-.6 1.7-1.2.2-.6.2-1.1.2-1.2-.1-.1-.3-.2-.5-.3z"/></svg>
+</a>
+
 <div class="barra-compra" id="barra-compra">
-  <div class="valor"><span data-preco>R$ 19,90</span><small>Garantia de 7 dias</small></div>
-  <a class="cta comprar" href="#oferta">Comprar agora</a>
+  <div class="valor">a partir de R$ 19,90<small>Garantia de 7 dias</small></div>
+  <a class="cta" href="#planos">Quero agora</a>
 </div>
 
 <script>
   (function () {
-    // Preço e link do checkout (definidos lá no topo do arquivo)
-    document.querySelectorAll("[data-preco]").forEach(function (el) { el.textContent = PRECO; });
-
-    var configurado = /^https:\/\//.test(CHECKOUT_URL);
+    // links de compra e do WhatsApp (definidos no topo do arquivo)
+    var checkout = { basico: CHECKOUT_BASICO, completo: CHECKOUT_COMPLETO };
     document.querySelectorAll("a.comprar").forEach(function (a) {
-      if (configurado) {
-        a.href = CHECKOUT_URL;
-        a.rel = "noopener";
-      }
+      var url = checkout[a.dataset.plano];
+      if (/^https:\/\//.test(url)) { a.href = url; a.rel = "noopener"; }
     });
-    if (!configurado) {
-      // Lembrete para o dono da página: os botões ainda não levam ao checkout
-      var aviso = document.createElement("div");
-      aviso.className = "aviso-config";
-      aviso.setAttribute("role", "alert");
-      aviso.textContent = "Atenção: cole o link do checkout da Kiwify em CHECKOUT_URL, no topo do arquivo.";
-      document.body.appendChild(aviso);
-    }
+    var msg = encodeURIComponent("Olá! Vim pela página do PendrivePlay e tenho uma dúvida.");
+    document.querySelectorAll("a.link-zap").forEach(function (a) { a.href = "https://wa.me/" + WHATSAPP + "?text=" + msg; });
 
-    // Barra de compra fixa no celular: aparece depois do topo
+    // barra de compra no celular: aparece depois do topo, some na seção de planos
     var barra = document.getElementById("barra-compra");
-    var hero = document.querySelector(".hero");
-    var oferta = document.getElementById("oferta");
     if ("IntersectionObserver" in window) {
       var visiveis = new Set();
-      var obsBarra = new IntersectionObserver(function (entradas) {
-        entradas.forEach(function (e) { e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target); });
+      var obsBarra = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { e.isIntersecting ? visiveis.add(e.target) : visiveis.delete(e.target); });
         barra.classList.toggle("mostrar", visiveis.size === 0);
       });
-      obsBarra.observe(hero); obsBarra.observe(oferta);
-
-      // Animação suave ao rolar a página
-      var obs = new IntersectionObserver(function (entradas) {
-        entradas.forEach(function (e) {
-          if (e.isIntersecting) { e.target.classList.add("visivel"); obs.unobserve(e.target); }
-        });
+      obsBarra.observe(document.querySelector(".hero")); obsBarra.observe(document.getElementById("planos"));
+      var obs = new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add("visivel"); obs.unobserve(e.target); } });
       }, { threshold: 0.12 });
       document.querySelectorAll(".revelar").forEach(function (el) { obs.observe(el); });
     } else {
       document.querySelectorAll(".revelar").forEach(function (el) { el.classList.add("visivel"); });
       barra.classList.add("mostrar");
     }
-  })();
-  // vídeo real: toca mudo quando aparece na tela; o botão liga o som
-  (function () {
+
+    // vídeo: toca mudo; o botão liga o som e recomeça
     var v = document.getElementById("video-real"), b = document.getElementById("ligar-som");
-    if (!v) return;
     b.addEventListener("click", function () { v.muted = false; v.currentTime = 0; v.play(); b.hidden = true; });
     v.addEventListener("volumechange", function () { if (!v.muted) b.hidden = true; });
     if ("IntersectionObserver" in window) {
       new IntersectionObserver(function (es) {
-        es.forEach(function (e) { if (e.isIntersecting) { v.play().catch(function () {}); } else { v.pause(); } });
+        es.forEach(function (e) { if (e.isIntersecting) v.play().catch(function () {}); else v.pause(); });
       }, { threshold: 0.4 }).observe(v);
     }
   })();
