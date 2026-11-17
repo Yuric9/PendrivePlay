@@ -8,6 +8,7 @@ trilha é livre de direitos autorais.
 Uso: python gerar_trilha_eurodance.py [saida.wav] [duracao_em_segundos]
 Precisa de numpy e scipy.
 """
+import os
 import sys
 import wave
 
@@ -151,8 +152,8 @@ TEMA = [
 ]
 n_comp = int(np.ceil(duracao / COMPASSO))
 DROP = 1          # explosão no 2º compasso (~1,9 s)
-FINAL = 15        # refrão final (~28,1 s)
-PAUSA = 9         # compasso com a bateria mais leve (respiro no meio)
+FINAL = int(os.environ.get("TRILHA_FINAL", 15))   # refrão final (padrão ~28,1 s)
+PAUSA = int(os.environ.get("TRILHA_PAUSA", 9))    # compasso com a bateria mais leve (respiro no meio)
 
 for c in range(n_comp):
     ini = c * COMPASSO
@@ -247,8 +248,9 @@ def impacto():
 
 
 por(efeitos, subida(COMPASSO - 0.1), 0.05, 0.3)
-for troca in (5, 11, 17, 22):
-    por(efeitos, whoosh(), troca - 0.35, 0.28, 0.5 if troca % 2 else -0.5)
+TROCAS = [float(x) for x in os.environ.get("TRILHA_TROCAS", "5,11,17,22").split(",")]   # cortes de cena (whoosh)
+for troca in TROCAS:
+    por(efeitos, whoosh(), troca - 0.35, 0.28, 0.5 if int(troca) % 2 else -0.5)
 por(efeitos, subida(1.4), FINAL * COMPASSO - 1.4, 0.32)
 por(efeitos, impacto(), FINAL * COMPASSO, 0.65)
 
