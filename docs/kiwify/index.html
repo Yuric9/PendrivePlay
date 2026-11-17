@@ -257,6 +257,12 @@
   .aviso-config { position: fixed; top: 12px; left: 50%; transform: translateX(-50%); z-index: 60; background: #b91c1c; color: #fff; font-weight: 700; font-size: 14px; padding: 10px 16px; border-radius: 10px; box-shadow: 0 10px 30px rgba(0,0,0,.5); max-width: 92%; text-align: center; }
 
   /* animação ao rolar */
+  .video-real { position: relative; width: min(360px, 100%); margin: 0 auto; border-radius: 22px; overflow: hidden;
+                 box-shadow: 0 0 0 2px var(--neon-2), 0 0 60px rgba(57,255,136,.25); background: #000; }
+  .video-real video { display: block; width: 100%; aspect-ratio: 9 / 16; object-fit: cover; }
+  .video-real .som { position: absolute; top: 14px; left: 50%; transform: translateX(-50%); border: 0; border-radius: 999px;
+                     background: var(--neon); color: #05070a; font-weight: 800; font-size: 15px; padding: 10px 18px; cursor: pointer; white-space: nowrap; }
+  .video-real .som[hidden] { display: none; }
   .revelar { opacity: 0; transform: translateY(22px); transition: opacity .7s ease, transform .7s ease; }
   .revelar.visivel { opacity: 1; transform: none; }
   @media (prefers-reduced-motion: reduce) {
@@ -331,6 +337,21 @@
   </section>
 
   <!-- DORES -->
+  <!-- FUNCIONANDO DE VERDADE (vídeo real, gravado numa barbearia) -->
+  <section aria-labelledby="real">
+    <div class="container">
+      <div class="titulo revelar">
+        <span class="chapeu">Teste real</span>
+        <h2 id="real">Veja funcionando numa barbearia de verdade</h2>
+        <p>Do computador para o pendrive e direto para uma TV comum, sem internet.</p>
+      </div>
+      <div class="video-real revelar">
+        <video id="video-real" src="midia/funcionando.mp4" poster="midia/funcionando.jpg" muted loop playsinline preload="metadata" controls></video>
+        <button type="button" class="som" id="ligar-som">🔊 Toque para ouvir</button>
+      </div>
+    </div>
+  </section>
+
   <section class="alt" aria-labelledby="dores">
     <div class="container">
       <div class="titulo revelar">
@@ -582,6 +603,18 @@
     } else {
       document.querySelectorAll(".revelar").forEach(function (el) { el.classList.add("visivel"); });
       barra.classList.add("mostrar");
+    }
+  })();
+  // vídeo real: toca mudo quando aparece na tela; o botão liga o som
+  (function () {
+    var v = document.getElementById("video-real"), b = document.getElementById("ligar-som");
+    if (!v) return;
+    b.addEventListener("click", function () { v.muted = false; v.currentTime = 0; v.play(); b.hidden = true; });
+    v.addEventListener("volumechange", function () { if (!v.muted) b.hidden = true; });
+    if ("IntersectionObserver" in window) {
+      new IntersectionObserver(function (es) {
+        es.forEach(function (e) { if (e.isIntersecting) { v.play().catch(function () {}); } else { v.pause(); } });
+      }, { threshold: 0.4 }).observe(v);
     }
   })();
 </script>
